@@ -1,0 +1,17 @@
+# credenciales — NUNCA subir
+conn.txt
+.env
+*.env
+!.env.example
+
+# dependencias
+node_modules/
+
+# salidas de sqlcmd y datos intermedios
+landing/payload.json
+landing/salida.txt
+
+# basura
+_to_delete/
+Thumbs.db
+.DS_Store
