@@ -342,8 +342,12 @@ footer{padding:32px 0 46px;font-family:var(--f-d);font-size:12.5px;color:var(--i
 <section id="juego">
   <div class="wrap">
     <div class="sh"><span class="n">05</span><h2>Data Detective</h2></div>
-    <p class="lede">No hay preguntas. Hay un caso, un presupuesto de movimientos de investigación y una acusación final. <strong>Cada movimiento es una operación OLAP real sobre el cubo</strong>: drill-down, roll-up, slice y dice. Gastá los movimientos con criterio.</p>
-
+    <p class="lede">La gerencia plantea una "misterio" sin resolver y vos, tomando el rol de Detective tenés que usar pistas para realizar una acusación:</p>
+      <li>
+        <ul>Cada caso cuenta con una serie de "pruebas" que son resultados de operaciones OLAP reales sobre el cubo: drill-down, roll-up, slice y dice.</ul>
+        <ul>Si estás seguro de quién es el culpable, podés realizar una "acusación" acompañada de un "motivo", pero para hacerlo tenés que adjuntar una "prueba" que ya hayas hecho.</ul>
+        <ul>Mientras menos pistas uses, más puntos tenés, y si resolvés el caso citando la pista correcta, ¡obtenés un bono de XP adicional!</ul>        
+      </li>
     <div class="casos" id="casos"></div>
 
     <div class="gameshell" id="shell" hidden>
@@ -641,7 +645,7 @@ var CAUSAS = [
 
 var CASOS = [
   { id:1, nombre:'El turno que se apaga', xp:100, movs:8, sujeto:'noche', causa:'ausentismo', clave:'turno',
-    brief:'La gerencia reporta que una franja horaria no llega a cubrir las cajas. Encontrá cuál y por qué.',
+    brief:'La gerencia reporta que una franja horaria no llega con su personal a cubrir las cajas. Encontrá cuál y por qué.',
     meta:['100 XP','8 movimientos','guiado'],
     regla:'RI-1 · Las jornadas de turno noche presentan más del doble de ausentismo que las de mañana, y la brecha se amplía los fines de semana.' },
   { id:2, nombre:'Horas que no cierran', xp:200, movs:6, sujeto:'franquicia', causa:'extras', clave:'franquicia',
