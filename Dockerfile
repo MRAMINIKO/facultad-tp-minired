@@ -11,7 +11,7 @@ RUN cd landing/backend && npm install --omit=dev
 # el backend sirve los estaticos de ../ y lee ../../sql/03_payload.sql
 COPY landing/backend/ ./landing/backend/
 COPY landing/index.html landing/datos.js ./landing/
-COPY sql/03_payload.sql ./sql/03_payload.sql
+COPY sql/ ./sql/
 
 # Variables a definir en dokploy: DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME
 ENV PORT=3000
