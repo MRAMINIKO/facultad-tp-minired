@@ -10,7 +10,10 @@ RUN cd landing/backend && npm install --omit=dev
 
 # el backend sirve los estaticos de ../ y lee ../../sql/03_payload.sql
 COPY landing/backend/ ./landing/backend/
-COPY landing/index.html landing/datos.js landing/assets/ ./landing/
+COPY landing/index.html landing/datos.js ./landing/
+# ojo: COPY de un directorio copia su CONTENIDO, asi que el destino
+# tiene que nombrar la carpeta explicitamente o los PNG quedan sueltos
+COPY landing/assets/ ./landing/assets/
 COPY sql/ ./sql/
 
 # Variables a definir en dokploy: DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME
