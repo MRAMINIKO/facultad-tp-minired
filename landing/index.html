@@ -1,877 +1,3099 @@
 <!doctype html>
 <html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MiniRed · Control de Capital Humano</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
-<style>
-:root{
-  --paper:#E9ECE8;--card:#FBFCFA;--card-2:#F2F4F0;
-  --ink:#141A18;--ink-2:#4E5A56;--ink-3:#78837F;
-  --rule:#CFD6D0;--rule-soft:#DDE2DC;
-  --brand:#9E2A2B;--brand-soft:#F3DEDC;--brand-ink:#7A1F20;
-  --data:#1F5F6B;--data-soft:#DCE9EB;
-  --warn:#8A5910;--warn-soft:#F2E5CC;
-  --ok:#2C6B3F;--ok-soft:#DCEBDF;
-  --panel:#14201F;--panel-2:#1C2B29;--panel-ink:#E4EAE7;--panel-ink-2:#93A4A0;--panel-rule:#2C3E3B;
-  --f-d:"Archivo","Helvetica Neue",Arial,sans-serif;
-  --f-b:"Source Serif 4",Georgia,serif;
-  --f-m:"IBM Plex Mono",ui-monospace,Menlo,monospace;
-}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --paper:#0E1211;--card:#161C1A;--card-2:#1C2422;
-  --ink:#E6EAE7;--ink-2:#9EAAA5;--ink-3:#7B8783;
-  --rule:#2B3532;--rule-soft:#232B29;
-  --brand:#DE7A72;--brand-soft:#2E1B1A;--brand-ink:#EFA79F;
-  --data:#6FBAC5;--data-soft:#14282C;
-  --warn:#D9A441;--warn-soft:#2C2313;
-  --ok:#7CC08F;--ok-soft:#17251A;
-  --panel:#0A0F0E;--panel-2:#141D1C;--panel-rule:#243230;
-}}
-:root[data-theme="dark"]{
-  --paper:#0E1211;--card:#161C1A;--card-2:#1C2422;
-  --ink:#E6EAE7;--ink-2:#9EAAA5;--ink-3:#7B8783;
-  --rule:#2B3532;--rule-soft:#232B29;
-  --brand:#DE7A72;--brand-soft:#2E1B1A;--brand-ink:#EFA79F;
-  --data:#6FBAC5;--data-soft:#14282C;
-  --warn:#D9A441;--warn-soft:#2C2313;
-  --ok:#7CC08F;--ok-soft:#17251A;
-  --panel:#0A0F0E;--panel-2:#141D1C;--panel-rule:#243230;
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-b);font-size:16.5px;line-height:1.62;-webkit-font-smoothing:antialiased}
-.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
-h1,h2,h3,h4{font-family:var(--f-d);margin:0}
-p{margin:0 0 14px;max-width:72ch}
-a{color:var(--brand)}
-code{font-family:var(--f-m);font-size:.85em;background:var(--card-2);border:1px solid var(--rule-soft);padding:1px 5px;border-radius:3px}
-
-/* nav */
-.topbar{position:sticky;top:0;z-index:50;background:var(--panel);color:var(--panel-ink);border-bottom:1px solid var(--panel-rule)}
-.topbar .wrap{display:flex;align-items:center;gap:22px;height:52px;flex-wrap:wrap}
-.brandmark{font-family:var(--f-d);font-weight:700;font-size:15px;letter-spacing:-.01em;white-space:nowrap}
-.brandmark b{color:#DE7A72}
-.topnav{display:flex;gap:16px;font-family:var(--f-d);font-size:12.5px;font-weight:500;overflow-x:auto}
-.topnav a{color:var(--panel-ink-2);text-decoration:none;white-space:nowrap}
-.topnav a:hover{color:var(--panel-ink)}
-.topnav a:focus-visible{outline:2px solid #DE7A72;outline-offset:3px;border-radius:2px}
-
-/* banner muestra */
-.muestra{background:var(--warn-soft);color:var(--warn);border-bottom:1px solid var(--warn);font-family:var(--f-d);font-size:12.5px;font-weight:600;text-align:center;padding:8px 16px}
-
-/* hero */
-.hero{padding:52px 0 34px;border-bottom:1px solid var(--rule)}
-.eyebrow{font-family:var(--f-d);font-size:11px;font-weight:600;letter-spacing:.17em;text-transform:uppercase;color:var(--brand)}
-.hero h1{font-size:clamp(30px,4.8vw,46px);font-weight:700;line-height:1.06;letter-spacing:-.022em;margin:12px 0 12px;text-wrap:balance}
-.hero p{font-size:18px;color:var(--ink-2);max-width:60ch}
-
-/* kpis */
-.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:4px;overflow:hidden;margin:26px 0 0}
-@media(min-width:720px){.kpis{grid-template-columns:repeat(4,1fr)}}
-.kpi{background:var(--card);padding:17px 18px}
-.kpi .k{font-family:var(--f-d);font-size:10.5px;font-weight:600;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3)}
-.kpi .v{font-family:var(--f-d);font-size:27px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin-top:4px;line-height:1.1}
-.kpi .s{font-size:13px;color:var(--ink-2);line-height:1.35;margin-top:2px}
-
-/* secciones */
-section{padding:44px 0;border-bottom:1px solid var(--rule);scroll-margin-top:56px}
-.sh{display:flex;gap:14px;align-items:baseline;margin-bottom:16px}
-.sh .n{font-family:var(--f-d);font-weight:700;font-size:12px;color:var(--brand);padding-top:6px;font-variant-numeric:tabular-nums}
-.sh h2{font-size:clamp(22px,3vw,28px);font-weight:700;letter-spacing:-.017em;text-wrap:balance}
-.lede{color:var(--ink-2);max-width:70ch}
-
-/* grids */
-.g2{display:grid;gap:16px}
-@media(min-width:820px){.g2{grid-template-columns:1fr 1fr}}
-.g3{display:grid;gap:14px}
-@media(min-width:760px){.g3{grid-template-columns:repeat(3,1fr)}}
-
-.box{background:var(--card);border:1px solid var(--rule);border-radius:4px;padding:18px 20px}
-.box h3{font-size:15.5px;font-weight:600;margin-bottom:10px}
-.box h4{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:8px}
-
-/* barras */
-.bars{display:flex;flex-direction:column;gap:9px;margin-top:4px}
-.bar{display:grid;grid-template-columns:118px 1fr 62px;gap:10px;align-items:center;font-size:13.5px}
-.bar .bl{font-family:var(--f-d);font-weight:500;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.bar .bt{height:16px;background:var(--card-2);border-radius:2px;overflow:hidden}
-.bar .bf{height:100%;background:var(--data);border-radius:2px}
-.bar.hi .bf{background:var(--brand)}
-.bar .bv{font-family:var(--f-m);font-size:12.5px;text-align:right;font-variant-numeric:tabular-nums}
-
-/* tabla */
-.tw{overflow-x:auto;border:1px solid var(--rule);border-radius:4px;background:var(--card)}
-table{border-collapse:collapse;width:100%;font-size:14px;min-width:440px}
-th{font-family:var(--f-d);font-weight:600;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);text-align:left;padding:10px 13px;border-bottom:1px solid var(--rule);background:var(--card-2);white-space:nowrap}
-td{padding:9px 13px;border-bottom:1px solid var(--rule-soft);vertical-align:top}
-tbody tr:last-child td{border-bottom:0}
-td.n,th.n{text-align:right;font-family:var(--f-m);font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
-tr.mark td{background:var(--brand-soft)}
-
-.tag{font-family:var(--f-d);font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:3px 7px;border-radius:3px;display:inline-block;white-space:nowrap}
-.tag.ok{background:var(--ok-soft);color:var(--ok)}
-.tag.no{background:var(--card-2);color:var(--ink-3);border:1px solid var(--rule)}
-.tag.hot{background:var(--brand-soft);color:var(--brand-ink)}
-
-.note{border:1px solid var(--rule);border-left:3px solid var(--data);background:var(--card);border-radius:0 4px 4px 0;padding:15px 18px;margin:0 0 16px}
-.note.flag{border-left-color:var(--brand)}
-.note.warn{border-left-color:var(--warn)}
-.note p:last-child{margin-bottom:0}
-.note h4{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:6px}
-
-/* fases kdd */
-.fases{display:grid;gap:10px}
-@media(min-width:900px){.fases{grid-template-columns:repeat(5,1fr)}}
-.fase{background:var(--card);border:1px solid var(--rule);border-radius:4px;padding:14px 15px}
-.fase.hot{border-color:var(--brand);background:var(--brand-soft)}
-.fase .fn{font-family:var(--f-d);font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brand);margin-bottom:5px}
-.fase .ft{font-family:var(--f-d);font-weight:600;font-size:14.5px;margin-bottom:5px}
-.fase .fd{font-size:13.5px;color:var(--ink-2);line-height:1.42}
-
-/* ============ JUEGO ============ */
-#juego{background:var(--panel);color:var(--panel-ink);border-bottom:1px solid var(--panel-rule)}
-#juego .sh h2,#juego h3,#juego h4{color:var(--panel-ink)}
-#juego .lede{color:var(--panel-ink-2)}
-#juego .sh .n{color:#DE7A72}
-.gameshell{margin-top:20px;border:1px solid var(--panel-rule);border-radius:5px;background:var(--panel-2);overflow:hidden}
-.gamebar{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;padding:13px 18px;border-bottom:1px solid var(--panel-rule);background:#0F1817}
-.gstat{font-family:var(--f-d);font-size:12px;color:var(--panel-ink-2);display:flex;align-items:center;gap:7px}
-.gstat b{font-size:15px;color:var(--panel-ink);font-variant-numeric:tabular-nums;font-weight:700}
-.gbody{display:grid;gap:0}
-@media(min-width:880px){.gbody{grid-template-columns:264px 1fr}}
-.gleft{border-right:1px solid var(--panel-rule);padding:16px}
-@media(max-width:879px){.gleft{border-right:0;border-bottom:1px solid var(--panel-rule)}}
-.gright{padding:16px 18px;min-width:0}
-.gcap{font-family:var(--f-d);font-size:10.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--panel-ink-2);margin-bottom:9px}
-.mv{display:block;width:100%;text-align:left;background:#182422;color:var(--panel-ink);border:1px solid var(--panel-rule);border-radius:4px;padding:9px 11px;margin-bottom:7px;cursor:pointer;font-family:var(--f-d);font-size:13px;line-height:1.3}
-.mv:hover:not(:disabled){border-color:#DE7A72;background:#1F2E2C}
-.mv:focus-visible{outline:2px solid #DE7A72;outline-offset:2px}
-.mv:disabled{opacity:.38;cursor:not-allowed}
-.mv .op{display:block;font-size:9.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:#8FBDC4;margin-bottom:2px}
-.mv.used{border-color:#3A5350;opacity:.55}
-.gout{background:#0C1413;border:1px solid var(--panel-rule);border-radius:4px;padding:14px 16px;min-height:150px}
-.gout table{min-width:0;font-size:13px}
-.gout th{background:#111C1A;color:var(--panel-ink-2);border-bottom-color:var(--panel-rule);padding:7px 10px}
-.gout td{color:var(--panel-ink);border-bottom-color:var(--panel-rule);padding:6px 10px}
-.gout tr.mark td{background:#2B1A19}
-.gout .tw{border-color:var(--panel-rule);background:transparent}
-.pista{margin-top:11px;padding:10px 13px;background:#1B2A28;border-left:3px solid #6FBAC5;border-radius:0 3px 3px 0;font-size:14px;color:var(--panel-ink)}
-.pista.key{border-left-color:#DE7A72}
-.clues{margin-top:14px;display:flex;flex-direction:column;gap:6px}
-.clue{display:flex;gap:9px;align-items:flex-start;font-size:13px;color:var(--panel-ink-2);background:#131F1E;border:1px solid var(--panel-rule);border-radius:3px;padding:8px 11px}
-.clue input{margin-top:3px;accent-color:#DE7A72}
-.clue label{cursor:pointer}
-.gfields{display:grid;gap:10px;margin-top:12px}
-@media(min-width:620px){.gfields{grid-template-columns:1fr 1fr}}
-select,input[type=text]{width:100%;background:#182422;color:var(--panel-ink);border:1px solid var(--panel-rule);border-radius:4px;padding:9px 10px;font-family:var(--f-d);font-size:13.5px}
-select:focus,input:focus{outline:2px solid #DE7A72;outline-offset:1px}
-.btn{font-family:var(--f-d);font-weight:600;font-size:13.5px;border-radius:4px;padding:10px 18px;cursor:pointer;border:1px solid transparent}
-.btn.primary{background:#9E2A2B;color:#fff;border-color:#9E2A2B}
-.btn.primary:hover{background:#B33334}
-.btn.ghost{background:transparent;color:var(--panel-ink);border-color:var(--panel-rule)}
-.btn.ghost:hover{border-color:#DE7A72}
-.btn:focus-visible{outline:2px solid #DE7A72;outline-offset:2px}
-.btn:disabled{opacity:.4;cursor:not-allowed}
-.gactions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
-.veredicto{margin-top:14px;border-radius:4px;padding:16px 18px;border:1px solid}
-.veredicto.win{background:#14251A;border-color:#3E7A50}
-.veredicto.lose{background:#2B1A19;border-color:#8A4340}
-.veredicto h4{font-family:var(--f-d);font-size:16px;font-weight:700;margin-bottom:7px;letter-spacing:-.01em;text-transform:none;color:var(--panel-ink)}
-.veredicto p{color:var(--panel-ink-2);font-size:14.5px;max-width:none}
-.veredicto .xp{font-family:var(--f-d);font-size:28px;font-weight:700;color:#E8B04B;font-variant-numeric:tabular-nums}
-.casos{display:grid;gap:11px;margin-top:16px}
-@media(min-width:760px){.casos{grid-template-columns:repeat(3,1fr)}}
-.caso{background:var(--panel-2);border:1px solid var(--panel-rule);border-radius:4px;padding:15px;text-align:left;cursor:pointer;color:var(--panel-ink);font-family:inherit}
-.caso:hover{border-color:#DE7A72}
-.caso:focus-visible{outline:2px solid #DE7A72;outline-offset:2px}
-.caso.on{border-color:#DE7A72;background:#22100F}
-.caso .cn{font-family:var(--f-d);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--panel-ink-2)}
-.caso .ct{font-family:var(--f-d);font-weight:700;font-size:16px;margin:5px 0 6px;letter-spacing:-.01em}
-.caso .cd{font-size:13.5px;color:var(--panel-ink-2);line-height:1.45}
-.caso .cm{margin-top:9px;display:flex;gap:7px;flex-wrap:wrap;font-family:var(--f-d);font-size:11px;font-weight:600;color:var(--panel-ink-2)}
-.caso .cm span{background:#0F1817;border:1px solid var(--panel-rule);padding:2px 7px;border-radius:3px}
-
-.sqlbox{margin-top:11px;border:1px solid var(--panel-rule);border-radius:4px;background:#0A100F}
-.sqlbox summary{cursor:pointer;padding:8px 12px;font-family:var(--f-d);font-size:12px;color:#8FBDC4;list-style:none}
-.sqlbox summary::-webkit-details-marker{display:none}
-.sqlbox summary:before{content:"\25B8 ";color:#8FBDC4}
-.sqlbox[open] summary:before{content:"\25BE "}
-.sqlbox pre{margin:0;padding:12px 14px;font-family:var(--f-m);font-size:12px;line-height:1.55;color:var(--panel-ink);overflow-x:auto;border-top:1px solid var(--panel-rule);white-space:pre}
-.sqlbox.claro{background:var(--card-2);border-color:var(--rule);margin-top:12px}
-.sqlbox.claro summary{color:var(--data)}
-.sqlbox.claro summary:before{color:var(--data)}
-.sqlbox.claro pre{color:var(--ink);border-top-color:var(--rule)}
-.modo{font-family:var(--f-d);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 9px;border-radius:3px;margin-left:auto;white-space:nowrap}
-.modo.vivo{background:#14251A;color:#7CC08F;border:1px solid #3E7A50}
-.modo.local{background:#2C2313;color:#D9A441;border:1px solid #8A6A20}
-footer{padding:32px 0 46px;font-family:var(--f-d);font-size:12.5px;color:var(--ink-3)}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
-</style>
-</head>
-<body>
-
-<div class="topbar">
-  <div class="wrap">
-    <div class="brandmark">Mini<b>Red</b> · Capital Humano</div>
-    <nav class="topnav">
-      <a href="#auditoria">Auditoría</a>
-      <a href="#kdd">Proceso KDD</a>
-      <a href="#tablero">Tablero</a>
-      <a href="#reglas">Reglas</a>
-      <a href="#juego">Data Detective</a>
-      <a href="#ranking">Ranking</a>
-    </nav>
-    <span id="modo" class="modo" hidden></span>
-  </div>
-</div>
-
-<div id="bannerMuestra" class="muestra" hidden>
-  Datos de muestra — reemplazá <code>datos.js</code> con la salida de la sección 7 de <code>02_cubo.sql</code>
-</div>
-
-<div class="wrap">
-
-  <header class="hero">
-    <div class="eyebrow">Consultora analítica · Gerencia de RRHH</div>
-    <h1>Control de personal y productividad operativa</h1>
-    <p>MiniRed nos pidió controlar ausentismo, horas extra y costo laboral por sucursal y turno. Su Data Warehouse no lo permitía, así que diseñamos el data mart que faltaba — y encontramos que las señales de personal anticipan el cierre de un local.</p>
-    <div class="kpis" id="kpis"></div>
-  </header>
-
-  <!-- AUDITORIA -->
-  <section id="auditoria">
-    <div class="sh"><span class="n">01</span><h2>Auditoría del dato</h2></div>
-    <p class="lede">Antes de analizar, auditamos lo que la base realmente contiene. Cinco hallazgos condicionan todo lo demás.</p>
-
-    <div class="g2" style="margin-top:18px">
-      <div class="box">
-        <h4>Clasificación de variables</h4>
-        <div class="tw" style="border:0">
-          <table>
-            <thead><tr><th>Continuas</th><th>Discretas / categóricas</th></tr></thead>
-            <tbody><tr>
-              <td><code>ImporteTotal</code>, <code>CostoUnitario</code>, <code>HorasTrabajadas</code>, <code>HorasExtra</code>, <code>MinutosTardanza</code>, <code>MontoBruto</code></td>
-              <td><code>Zona</code>, <code>Turno</code>, <code>TipoPago</code>, <code>TipoContrato</code>, <code>TipoAusencia</code>, <code>EsFinDeSemana</code>, <code>IdRubro</code></td>
-            </tr></tbody>
-          </table>
-        </div>
-        <p style="margin:12px 0 0;font-size:14.5px;color:var(--ink-2)"><strong>Trampa:</strong> <code>IdRubro</code> vale 1 a 5 y <code>EsFinDeSemana</code> vale 0 o 1. Son números, pero el promedio no significa nada: son etiquetas disfrazadas. La antigüedad, que sí es continua, la <strong>discretizamos</strong> en tramos para poder minar reglas.</p>
-      </div>
-      <div class="box">
-        <h4>Hallazgos</h4>
-        <div class="tw" style="border:0">
-          <table>
-            <tbody>
-              <tr><td><span class="tag hot">A-01</span></td><td>Producto, cajero, medio de pago, cantidad y costo se generan con <code>CHECKSUM(NEWID())</code>: son uniformes independientes. <strong>No hay patrones que descubrir ahí.</strong></td></tr>
-              <tr><td><span class="tag hot">A-02</span></td><td>El único patrón real es territorial: las ventas se acotan al rango apertura–cierre de cada local. San Justo cerró el 31-08-2025.</td></tr>
-              <tr><td><span class="tag hot">A-03</span></td><td><code>EsFinDeSemana</code> es una trampa: 28,6 % de los tickets caen sábado o domingo porque son 2 de 7 días.</td></tr>
-              <tr><td><span class="tag hot">A-04</span></td><td><code>Dim_Cajero</code> no está ligada a sucursal: un cajero "vende" en los 14 locales el mismo día.</td></tr>
-              <tr><td><span class="tag hot">A-05</span></td><td>El script anuncia 50.000 filas de ventas; genera 20.000.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <div class="note flag" style="margin-top:16px">
-      <h4>Declaración de supuestos</h4>
-      <p>El data mart de RRHH no existía: lo generamos nosotros. Los patrones sembrados están declarados por adelantado en la documentación. Lo que se demuestra acá no es que esos patrones existan, sino que <strong>el proceso de minería los recupera partiendo del dato y descarta los que no sembramos</strong>.</p>
-    </div>
-  </section>
-
-  <!-- KDD -->
-  <section id="kdd">
-    <div class="sh"><span class="n">02</span><h2>Proceso KDD</h2></div>
-    <p class="lede">KDD es el proceso completo. La minería de datos es solamente la cuarta fase, marcada en rojo.</p>
-    <div class="fases" style="margin-top:18px">
-      <div class="fase"><div class="fn">Fase 1</div><div class="ft">Selección</div><div class="fd">2024–2025 completos; se descartan sucursales fuera de su ventana de operación.</div></div>
-      <div class="fase"><div class="fn">Fase 2</div><div class="ft">Preprocesamiento</div><div class="fd">Se detecta que <code>Dim_Cajero</code> no está ligada a sucursal; se controla que no haya asistencias con el local cerrado.</div></div>
-      <div class="fase"><div class="fn">Fase 3</div><div class="ft">Transformación</div><div class="fd">Vista ancha del cubo, indicadores derivados y discretización de la antigüedad en tramos.</div></div>
-      <div class="fase hot"><div class="fn">Fase 4</div><div class="ft">Minería</div><div class="fd">Reglas de asociación entre turno, contrato, antigüedad, sucursal y ausentismo.</div></div>
-      <div class="fase"><div class="fn">Fase 5</div><div class="ft">Interpretación</div><div class="fd">Validación contra un año que el método no vio y control negativo.</div></div>
-    </div>
-  </section>
-
-  <!-- TABLERO -->
-  <section id="tablero">
-    <div class="sh"><span class="n">03</span><h2>Tablero ejecutivo</h2></div>
-    <p class="lede">Agregaciones directas del cubo <code>vw_Cubo_CapitalHumano</code>.</p>
-    <div class="g2" style="margin-top:18px">
-      <div class="box"><h3>Tasa de ausentismo por turno</h3><div class="bars" id="chTurno"></div></div>
-      <div class="box"><h3>Tasa de ausentismo por zona</h3><div class="bars" id="chZona"></div></div>
-    </div>
-    <div class="g2" style="margin-top:16px">
-      <div class="box"><h3>Horas extra por empleado, por sucursal</h3><div class="bars" id="chExtra"></div></div>
-      <div class="box"><h3>Ausentismo por contrato y antigüedad</h3><div class="bars" id="chContrato"></div></div>
-    </div>
-    <div class="box" style="margin-top:16px"><h3>San Justo · evolución mensual 2025 hasta el cierre</h3><div class="bars" id="chSanJusto"></div></div>
-  </section>
-
-  <!-- REGLAS -->
-  <section id="reglas">
-    <div class="sh"><span class="n">04</span><h2>Reglas inductivas</h2></div>
-    <p class="lede">Cada regla tiene forma <strong>SI ⟨antecedente⟩ ENTONCES ausencia</strong>. El <em>lift</em> es el que decide: en 1 la condición no aporta nada.</p>
-    <div class="tw" style="margin-top:16px"><table id="tblReglas">
-      <thead><tr><th>Regla</th><th class="n">Soporte</th><th class="n">Confianza</th><th class="n">Base</th><th class="n">Lift</th><th>Veredicto</th></tr></thead>
-      <tbody></tbody></table></div>
-
-    <div class="g2" style="margin-top:16px">
-      <div class="box">
-        <h3>Validación fuera de muestra</h3>
-        <p style="font-size:14.5px;color:var(--ink-2)">Las reglas se formulan mirando 2024 y se verifican contra 2025, que el método no vio. Si las dos columnas dan parecido, la regla es estable y no memorización del ruido.</p>
-        <div class="tw" style="border:0"><table id="tblFuera">
-          <thead><tr><th>Turno</th><th class="n">2024</th><th class="n">2025</th><th class="n">Δ</th></tr></thead><tbody></tbody></table></div>
-      </div>
-      <div class="box">
-        <h3>Control negativo</h3>
-        <p style="font-size:14.5px;color:var(--ink-2)">Corremos el mismo método sobre una relación que sabemos inexistente. Si el método "encontrara" algo acá, no podríamos creerle nada de lo demás. Y la trampa del fin de semana de la base provista:</p>
-        <div class="note warn" style="margin:0">
-          <p style="font-size:14.5px"><strong>28,6 % de los tickets caen sábado o domingo.</strong> No es comportamiento de los clientes: sábado y domingo son 2 de 7 días, y 2 ÷ 7 = 28,6 %. Es aritmética del calendario.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-</div>
-
-<!-- JUEGO -->
-<section id="juego">
-  <div class="wrap">
-    <div class="sh"><span class="n">05</span><h2>Data Detective</h2></div>
-    <p class="lede">No hay preguntas. Hay un caso, un presupuesto de movimientos de investigación y una acusación final. <strong>Cada movimiento es una operación OLAP real sobre el cubo</strong>: drill-down, roll-up, slice y dice. Gastá los movimientos con criterio.</p>
-
-    <div class="casos" id="casos"></div>
-
-    <div class="gameshell" id="shell" hidden>
-      <div class="gamebar">
-        <div class="gstat">Caso <b id="gCaso">—</b></div>
-        <div class="gstat">Movimientos restantes <b id="gMov">0</b></div>
-        <div class="gstat">Pistas <b id="gPistas">0</b></div>
-        <div class="gstat">XP en juego <b id="gXP">0</b></div>
-        <button class="btn ghost" style="margin-left:auto" id="btnReset" type="button">Reiniciar caso</button>
-      </div>
-      <div class="gbody">
-        <div class="gleft">
-          <div class="gcap">Operaciones disponibles</div>
-          <div id="movs"></div>
-        </div>
-        <div class="gright">
-          <div class="gcap">Resultado de la consulta</div>
-          <div class="gout" id="salida"><p style="color:var(--panel-ink-2);margin:0;font-size:14.5px">Elegí una operación de la izquierda para empezar a investigar.</p></div>
-
-          <div id="zonaAcusacion" hidden>
-            <div class="gcap" style="margin-top:18px">Pistas reunidas — citá al menos una en tu acusación</div>
-            <div class="clues" id="clues"></div>
-            <div class="gcap" style="margin-top:16px">Acusación</div>
-            <div class="gfields">
-              <select id="selSujeto" aria-label="Sujeto acusado"></select>
-              <select id="selCausa" aria-label="Causa"></select>
-            </div>
-            <div class="gactions">
-              <button class="btn primary" id="btnAcusar" type="button">Presentar acusación</button>
-            </div>
-          </div>
-
-          <div id="veredicto"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="wrap">
-  <section id="ranking">
-    <div class="sh"><span class="n">06</span><h2>Ranking</h2></div>
-    <p class="lede">Partidas resueltas en este navegador. En la versión con backend, esta tabla se persiste en SQL Server junto con cada movimiento OLAP que hizo el jugador — un dataset propio, generado por la landing.</p>
-    <div class="tw" style="margin-top:16px"><table id="tblRanking">
-      <thead><tr><th>Detective</th><th>Caso</th><th class="n">Movimientos</th><th class="n">XP</th></tr></thead>
-      <tbody></tbody></table></div>
-  </section>
-
-  <footer>
-    MiniRed S.A. · Trabajo Práctico Unidad 3 · Base de Datos Aplicada, UAI ·
-    Perspectiva Capital Humano × Expansión Territorial
-  </footer>
-</div>
-
-<script src="datos.js"></script>
-<script>
-(function(){
-"use strict";
-var D = window.DATOS || {};
-var API = false, PARTIDA = null, ORDEN_MOV = 0;
-var $ = function(s){ return document.querySelector(s); };
-
-function arrancar(){
-var fmt = function(n,d){ return (n==null||isNaN(n))?'—':Number(n).toLocaleString('es-AR',{minimumFractionDigits:d||0,maximumFractionDigits:d||0}); };
-var pct = function(n){ return (n==null||isNaN(n))?'—':Number(n).toFixed(2).replace('.',',')+' %'; };
-var esc = function(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); };
-
-if (window.DATOS_ES_MUESTRA) $('#bannerMuestra').hidden = false;
-
-/* ---------- KPIs ---------- */
-var k = D.kpis || {};
-$('#kpis').innerHTML = [
-  ['Tasa de ausentismo', pct(k.TasaAusentismo), fmt(k.Jornadas)+' jornadas analizadas'],
-  ['Dotación', fmt(k.Empleados), 'empleados en '+fmt(k.Sucursales)+' sucursales'],
-  ['Horas extra', fmt(k.HorasExtra,1), 'sobre '+fmt(k.HorasTrabajadas)+' horas trabajadas'],
-  ['Costo laboral', '$'+fmt((k.MontoBruto||0)/1e6,1)+' M', 'monto bruto liquidado 2024-2025']
-].map(function(a){
-  return '<div class="kpi"><div class="k">'+a[0]+'</div><div class="v">'+a[1]+'</div><div class="s">'+a[2]+'</div></div>';
-}).join('');
-
-/* ---------- barras ---------- */
-function bars(el, rows, key, val, unit, hiFn){
-  var max = Math.max.apply(null, rows.map(function(r){ return +r[val]||0; })) || 1;
-  $(el).innerHTML = rows.map(function(r){
-    var v = +r[val]||0, hi = hiFn && hiFn(r);
-    return '<div class="bar'+(hi?' hi':'')+'">'+
-      '<div class="bl" title="'+esc(r[key])+'">'+esc(r[key])+'</div>'+
-      '<div class="bt"><div class="bf" style="width:'+Math.max(2,(v/max*100))+'%"></div></div>'+
-      '<div class="bv">'+(unit==='%'?v.toFixed(1).replace('.',','):fmt(v,1))+(unit==='%'?'%':'')+'</div></div>';
-  }).join('');
-}
-
-// En modo vivo cada grafico se pide al backend y muestra el SQL que lo produjo,
-// asi cualquier numero de la pagina es trazable hasta una consulta al cubo.
-function graficoVivo(sel, spec, key, val, unit, hiFn){
-  if (!API) return;
-  fetch('api/olap', { method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify(spec) })
-    .then(function(r){ return r.ok ? r.json() : Promise.reject(new Error('api')); })
-    .then(function(j){
-      var filas = (j.filas||[]).slice();
-      if (spec.ordenarPor) filas.sort(function(a,b){ return b[spec.ordenarPor]-a[spec.ordenarPor]; });
-      if (spec.tope) filas = filas.slice(0, spec.tope);
-      bars(sel, filas, key, val, unit, hiFn);
-      var caja = document.querySelector(sel);
-      if (caja && caja.parentNode && !caja.parentNode.querySelector('.sqlbox')) {
-        caja.parentNode.insertAdjacentHTML('beforeend', cajaSql(j).replace('class="sqlbox"', 'class="sqlbox claro"'));
-      }
-    })
-    .catch(function(){});
-}
-
-var turnos = (D.porTurno||[]).slice().sort(function(a,b){ return b.Tasa-a.Tasa; });
-bars('#chTurno', turnos, 'Turno', 'Tasa', '%', function(r){ return r.Turno==='Noche'; });
-
-bars('#chZona', (D.porZona||[]).slice().sort(function(a,b){return b.Tasa-a.Tasa;}), 'Zona', 'Tasa', '%');
-
-bars('#chExtra', (D.porSucursal||[]).slice().sort(function(a,b){return b.ExtraPorEmpleado-a.ExtraPorEmpleado;}),
-     'NombreSucursal', 'ExtraPorEmpleado', '', function(r){ return r.EsFranquicia===1; });
-
-var contr = (D.porContrato||[]).map(function(r){
-  return { et: r.TipoContrato+' · '+String(r.TramoAntiguedad).replace(/^\d\.\s*/,''), Tasa:r.Tasa, tmp:r.TipoContrato==='Temporario' && /6 meses/.test(r.TramoAntiguedad) };
-}).sort(function(a,b){return b.Tasa-a.Tasa;});
-bars('#chContrato', contr, 'et', 'Tasa', '%', function(r){ return r.tmp; });
-
-var sj = (D.porSucursalMes||[]).filter(function(r){ return r.NombreSucursal==='San Justo' && r.Anio===2025; })
-        .sort(function(a,b){ return a.MesNumero-b.MesNumero; })
-        .map(function(r){ return { m:['','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'][r.MesNumero], Tasa:r.Tasa, hot:r.MesNumero>=6 }; });
-bars('#chSanJusto', sj, 'm', 'Tasa', '%', function(r){ return r.hot; });
-
-graficoVivo('#chTurno', { dims:['turno'], ordenarPor:'Tasa' },
-            'Turno', 'Tasa', '%', function(r){ return r.Turno==='Noche'; });
-
-graficoVivo('#chZona', { dims:['zona'], ordenarPor:'Tasa' },
-            'Zona', 'Tasa', '%');
-
-graficoVivo('#chExtra', { dims:['sucursal'], ordenarPor:'ExtraPorEmpleado' },
-            'Sucursal', 'ExtraPorEmpleado', '', function(r){
-              return ['Ramos Mejia','Tigre','Quilmes','Ramos Mejía'].indexOf(r.Sucursal) >= 0; });
-
-graficoVivo('#chContrato', { dims:['contrato','antiguedad'], ordenarPor:'Tasa' },
-            'Contrato', 'Tasa', '%');
-
-graficoVivo('#chSanJusto', { dims:['mes'], where:{ sucursal:'San Justo', anio:2025 }, orden:'mes' },
-            'Mes', 'Tasa', '%', function(r){ return /-(0[6-9]|1[0-2])$/.test(String(r.Mes)); });
-
-/* ---------- reglas: soporte / confianza / lift ---------- */
-var totJ = 0, totA = 0;
-(D.porTurno||[]).forEach(function(r){ totJ += r.Jornadas; totA += r.Jornadas*r.Tasa/100; });
-var base = totJ ? (totA/totJ*100) : 0;
-
-function regla(nombre, jornadas, tasa){
-  var conf = tasa, sop = totJ ? (jornadas*tasa/100)/totJ*100 : 0, lift = base ? conf/base : 0;
-  return { nombre:nombre, sop:sop, conf:conf, lift:lift };
-}
-var rNoche = (D.porTurno||[]).filter(function(r){return r.Turno==='Noche';})[0] || {Jornadas:0,Tasa:0};
-var rTemp  = (D.porContrato||[]).filter(function(r){return r.TipoContrato==='Temporario' && /6 meses/.test(r.TramoAntiguedad);})[0] || {Jornadas:0,Tasa:0};
-var sjRows = (D.porSucursalMes||[]).filter(function(r){return r.NombreSucursal==='San Justo' && r.Anio===2025 && r.MesNumero>=6;});
-var sjJorn = sjRows.reduce(function(s,r){ return s + (r.Jornadas||0); }, 0);
-var sjAus  = sjRows.reduce(function(s,r){ return s + (r.Jornadas||0)*(r.Tasa||0)/100; }, 0);
-var sjTasa = sjJorn ? (sjAus/sjJorn*100) : 0;
-var rCaba  = (D.porZona||[]).filter(function(r){return r.Zona==='CABA';})[0] || {Jornadas:0,Tasa:0};
-
-var reglas = [
-  regla('RI-1 &nbsp;SI Turno = Noche', rNoche.Jornadas, rNoche.Tasa),
-  regla('RI-2 &nbsp;SI Contrato = Temporario Y antigüedad &lt; 6 meses', rTemp.Jornadas, rTemp.Tasa),
-  regla('RI-3 &nbsp;SI Sucursal = San Justo Y mes ≥ 2025-06', sjJorn, sjTasa),
-  regla('CN-1 &nbsp;<em>control negativo</em> · SI Zona = CABA', rCaba.Jornadas, rCaba.Tasa)
-];
-function pintarReglas(lista){
-  $('#tblReglas').querySelector('tbody').innerHTML = lista.map(function(r){
-    var fuerte = r.lift >= 1.3;
-    return '<tr'+(fuerte?' class="mark"':'')+'><td>'+r.nombre+'</td>'+
-      '<td class="n">'+pct(r.sop)+'</td><td class="n">'+pct(r.conf)+'</td>'+
-      '<td class="n">'+pct(r.base)+'</td><td class="n"><strong>'+r.lift.toFixed(2).replace('.',',')+'</strong></td>'+
-      '<td>'+(fuerte?'<span class="tag ok">Patrón real</span>':'<span class="tag no">Sin señal</span>')+'</td></tr>';
-  }).join('');
-}
-
-if (API) {
-  fetch('api/reglas')
-    .then(function(r){ return r.ok ? r.json() : Promise.reject(new Error('api')); })
-    .then(function(j){
-      pintarReglas((j.filas||[]).map(function(f){
-        return { nombre: esc(f.Regla), sop:+f.Soporte, conf:+f.Confianza, base:+f.Base, lift:+f.Lift };
-      }));
-      var cont = $('#tblReglas').closest('.tw');
-      if (cont && cont.parentNode && !cont.parentNode.querySelector('.sqlbox')) {
-        cont.insertAdjacentHTML('afterend', cajaSql(j).replace('class="sqlbox"', 'class="sqlbox claro"'));
-      }
-    })
-    .catch(function(){ pintarReglas(reglas.map(function(r){ return {nombre:r.nombre, sop:r.sop, conf:r.conf, base:base, lift:r.lift}; })); });
-} else {
-  pintarReglas(reglas.map(function(r){ return {nombre:r.nombre, sop:r.sop, conf:r.conf, base:base, lift:r.lift}; }));
-}
-
-
-
-$('#tblFuera').querySelector('tbody').innerHTML = (D.fueraDeMuestra||[]).map(function(r){
-  var d = (r.T2025||0)-(r.T2024||0);
-  return '<tr><td>'+esc(r.Turno)+'</td><td class="n">'+pct(r.T2024)+'</td><td class="n">'+pct(r.T2025)+'</td>'+
-         '<td class="n">'+(d>=0?'+':'')+d.toFixed(2).replace('.',',')+'</td></tr>';
-}).join('');
-
-/* ================= JUEGO ================= */
-function tabla(cols, rows, markFn){
-  return '<div class="tw"><table><thead><tr>'+cols.map(function(c,i){
-      return '<th'+(i?' class="n"':'')+'>'+esc(c)+'</th>'; }).join('')+
-    '</tr></thead><tbody>'+rows.map(function(r){
-      return '<tr'+(markFn&&markFn(r)?' class="mark"':'')+'>'+r.cells.map(function(c,i){
-        return '<td'+(i?' class="n"':'')+'>'+c+'</td>'; }).join('')+'</tr>';
-    }).join('')+'</tbody></table></div>';
-}
-
-var MOVIMIENTOS = [
-  { id:'rollup', op:'Roll-up', label:'Total de la cadena', dims:[], run:function(){
-      return { html: tabla(['Nivel','Jornadas','Ausentismo','Horas extra'],
-        [{cells:['Toda la cadena', fmt(k.Jornadas), pct(k.TasaAusentismo), fmt(k.HorasExtra,1)]}]),
-        pista:'El ausentismo global es de '+pct(k.TasaAusentismo)+'. Un promedio no dice dónde está el problema: hay que bajar de nivel.' };
-  }},
-  { id:'turno', op:'Drill-down', label:'Abrir por turno', dims:['turno'], run:function(){
-      var rs = turnos.map(function(r){ return { t:r.Turno, cells:[esc(r.Turno), fmt(r.Jornadas), pct(r.Tasa), fmt(r.Extra,1)] }; });
-      var top = turnos[0]||{}, bot = turnos[turnos.length-1]||{};
-      return { html: tabla(['Turno','Jornadas','Ausentismo','Horas extra'], rs, function(r){ return r.t==='Noche'; }),
-        pista:'El turno '+top.Turno+' marca '+pct(top.Tasa)+' contra '+pct(bot.Tasa)+' del turno '+bot.Turno+': '+(bot.Tasa?(top.Tasa/bot.Tasa).toFixed(1).replace('.',','):'—')+' veces más.' };
-  }},
-  { id:'zona', op:'Drill-down', label:'Abrir por zona', dims:['zona'], run:function(){
-      var z = (D.porZona||[]).slice().sort(function(a,b){return b.Tasa-a.Tasa;});
-      return { html: tabla(['Zona','Jornadas','Ausentismo','Horas extra'],
-        z.map(function(r){ return {cells:[esc(r.Zona), fmt(r.Jornadas), pct(r.Tasa), fmt(r.Extra,1)]}; })),
-        pista:'Zona '+(z[0]||{}).Zona+' encabeza con '+pct((z[0]||{}).Tasa)+', pero la diferencia entre zonas es chica: el problema no es geográfico en sí mismo.' };
-  }},
-  { id:'sucursal', op:'Drill-down', label:'Abrir por sucursal', dims:['sucursal'], run:function(){
-      var s = (D.porSucursal||[]).slice().sort(function(a,b){return b.Tasa-a.Tasa;});
-      return { html: tabla(['Sucursal','Empleados','Ausentismo','Extra/empleado'],
-        s.map(function(r){ return { n:r.NombreSucursal, cells:[esc(r.NombreSucursal), fmt(r.Empleados), pct(r.Tasa), fmt(r.ExtraPorEmpleado,1)] }; },
-        ), function(r){ return r.n==='San Justo'; }),
-        pista:(s[0]||{}).NombreSucursal+' se despega del resto con '+pct((s[0]||{}).Tasa)+' de ausentismo.' };
-  }},
-  { id:'franquicia', op:'Dice', label:'Franquicias vs. locales propios', dims:['franquicia'], run:function(){
-      var f = D.franquicias||[];
-      return { html: tabla(['Tipo','Empleados','Horas extra','% sobre horas','Básico promedio'],
-        f.map(function(r){ return { t:r.Tipo, cells:[esc(r.Tipo), fmt(r.Empleados), fmt(r.Extra,1), pct(r.PctExtra), '$'+fmt(r.BasicoProm)] }; },
-        ), function(r){ return r.t==='Franquicia'; }),
-        pista:'Las franquicias tienen menos dotación y hasta un básico promedio algo menor — no llevan encargado de turno — pero casi triplican el peso de las horas extra sobre las horas trabajadas. Compensan dotación con extras, y eso encarece su costo por hora efectivo.' };
-  }},
-  { id:'extras', op:'Drill-down', label:'Horas extra por empleado', dims:['franquicia','sucursal'], run:function(){
-      var s = (D.porSucursal||[]).slice().sort(function(a,b){return b.ExtraPorEmpleado-a.ExtraPorEmpleado;}).slice(0,8);
-      return { html: tabla(['Sucursal','Franquicia','Empleados','Extra/empleado'],
-        s.map(function(r){ return { f:r.EsFranquicia, cells:[esc(r.NombreSucursal), r.EsFranquicia?'Sí':'No', fmt(r.Empleados), fmt(r.ExtraPorEmpleado,1)] }; },
-        ), function(r){ return r.f===1; }),
-        pista:'Las tres primeras posiciones en horas extra por empleado son franquicias, y son también las que menos dotación tienen.' };
-  }},
-  { id:'mes', op:'Slice', label:'Evolución mensual · San Justo', dims:['mes'], where:{sucursal:'San Justo', anio:2025}, orden:'mes', run:function(){
-      var m = (D.porSucursalMes||[]).filter(function(r){return r.NombreSucursal==='San Justo' && r.Anio===2025;})
-              .sort(function(a,b){return a.MesNumero-b.MesNumero;});
-      var mn = ['','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-      return { html: tabla(['Mes 2025','Ausentismo','Horas trabajadas'],
-        m.map(function(r){ return { h:r.MesNumero>=6, cells:[mn[r.MesNumero], pct(r.Tasa), fmt(r.Horas,1)] }; },
-        ), function(r){ return r.h; }),
-        pista:'A partir de junio de 2025 el ausentismo de San Justo se dispara y las horas trabajadas caen mes a mes. El local cerró el 31 de agosto: la fuga de personal se anticipó al cierre.' };
-  }},
-  { id:'contrato', op:'Drill-down', label:'Contrato y antigüedad', dims:['contrato','antiguedad'], run:function(){
-      var c = (D.porContrato||[]).slice().sort(function(a,b){return b.Tasa-a.Tasa;});
-      return { html: tabla(['Contrato','Antigüedad','Jornadas','Ausentismo'],
-        c.map(function(r){ return { h:r.TipoContrato==='Temporario'&&/6 meses/.test(r.TramoAntiguedad),
-          cells:[esc(r.TipoContrato), esc(String(r.TramoAntiguedad).replace(/^\d\.\s*/,'')), fmt(r.Jornadas), pct(r.Tasa)] }; },
-        ), function(r){ return r.h; }),
-        pista:'El personal temporario con menos de seis meses concentra el ausentismo; superado el año, la tasa vuelve a la media.' };
-  }},
-  { id:'ausencia', op:'Drill-down', label:'Tipo de ausencia por turno', dims:['turno','tipoAusencia'], run:function(){
-      var a = D.porTipoAusencia||[];
-      return { html: tabla(['Turno','Tipo de ausencia','Jornadas'],
-        a.map(function(r){ return { h:r.Turno==='Noche', cells:[esc(r.Turno), esc(r.TipoAusencia), fmt(r.Jornadas)] }; },
-        ), function(r){ return r.h; }),
-        pista:'La composición de las ausencias es parecida en los tres turnos: lo que cambia no es el motivo declarado sino el volumen.' };
-  }}
-];
-
-var SUJETOS = [
-  {id:'noche',     t:'El turno noche'},
-  {id:'manana',    t:'El turno mañana'},
-  {id:'franquicia',t:'Las sucursales franquiciadas'},
-  {id:'sanjusto',  t:'La sucursal San Justo'},
-  {id:'temporario',t:'El personal temporario reciente'},
-  {id:'caba',      t:'La zona CABA'}
-];
-var CAUSAS = [
-  {id:'ausentismo', t:'Ausentismo concentrado y sostenido'},
-  {id:'extras',     t:'Horas extra excesivas por dotación insuficiente'},
-  {id:'fuga',       t:'Fuga de personal previa al cierre del local'},
-  {id:'rotacion',   t:'Rotación temprana del personal'},
-  {id:'nada',       t:'No hay anomalía real, es ruido estadístico'}
-];
-
-var CASOS = [
-  { id:1, nombre:'El turno que se apaga', xp:100, movs:8, sujeto:'noche', causa:'ausentismo', clave:'turno',
-    brief:'La gerencia reporta que una franja horaria no llega a cubrir las cajas. Encontrá cuál y por qué.',
-    meta:['100 XP','8 movimientos','guiado'],
-    regla:'RI-1 · Las jornadas de turno noche presentan más del doble de ausentismo que las de mañana, y la brecha se amplía los fines de semana.' },
-  { id:2, nombre:'Horas que no cierran', xp:200, movs:6, sujeto:'franquicia', causa:'extras', clave:'franquicia',
-    brief:'El costo laboral de un grupo de locales se dispara sin que crezca la venta. El básico que pagan es el mismo que el resto.',
-    meta:['200 XP','6 movimientos','libre'],
-    regla:'RI-2 · Las franquicias operan con menos dotación y compensan con horas extra, así que su costo por hora efectivo es mayor pagando el mismo básico.' },
-  { id:3, nombre:'Expediente San Justo', xp:300, movs:5, sujeto:'sanjusto', causa:'fuga', clave:'mes',
-    brief:'Un local cerró en 2025. Demostrá que se podía anticipar mirando únicamente señales de personal, sin tocar las ventas.',
-    meta:['300 XP','5 movimientos','sin ayuda'],
-    regla:'RI-3 · En San Justo, el ausentismo trepa y las horas caen desde junio de 2025, tres meses antes del cierre del 31 de agosto. La fuga de personal anticipa el cierre.' }
-];
-
-var S = { caso:null, restantes:0, usados:[], pistas:[], cerrado:false };
-
-$('#casos').innerHTML = CASOS.map(function(c){
-  return '<button class="caso" type="button" data-c="'+c.id+'">'+
-    '<div class="cn">Caso 0'+c.id+'</div><div class="ct">'+esc(c.nombre)+'</div>'+
-    '<div class="cd">'+esc(c.brief)+'</div>'+
-    '<div class="cm">'+c.meta.map(function(m){return '<span>'+esc(m)+'</span>';}).join('')+'</div></button>';
-}).join('');
-
-$('#selSujeto').innerHTML = '<option value="">¿A quién acusás?</option>'+SUJETOS.map(function(s){return '<option value="'+s.id+'">'+esc(s.t)+'</option>';}).join('');
-$('#selCausa').innerHTML  = '<option value="">¿Por qué motivo?</option>'+CAUSAS.map(function(c){return '<option value="'+c.id+'">'+esc(c.t)+'</option>';}).join('');
-
-document.addEventListener('click', function(e){
-  var b = e.target.closest('.caso');
-  if (b) iniciar(+b.getAttribute('data-c'));
-});
-$('#btnReset').addEventListener('click', function(){ if (S.caso) iniciar(S.caso.id); });
-
-function iniciar(id){
-  S.caso = CASOS.filter(function(c){return c.id===id;})[0];
-  S.restantes = S.caso.movs; S.usados = []; S.pistas = []; S.cerrado = false;
-  Array.prototype.forEach.call(document.querySelectorAll('.caso'), function(el){
-    el.classList.toggle('on', +el.getAttribute('data-c')===id);
-  });
-  $('#shell').hidden = false;
-  $('#veredicto').innerHTML = '';
-  $('#zonaAcusacion').hidden = true;
-  $('#salida').innerHTML = '<p style="color:var(--panel-ink-2);margin:0;font-size:14.5px"><strong style="color:var(--panel-ink)">'+esc(S.caso.nombre)+'.</strong> '+esc(S.caso.brief)+' Elegí una operación de la izquierda.</p>';
-  pintarMovs(); refrescar();
-  PARTIDA = null; ORDEN_MOV = 0;
-  if (API) {
-    fetch('api/partida', { method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ detective:'En curso', idCaso:S.caso.id,
-        nombreCaso:S.caso.nombre, movimientos:S.caso.movs }) })
-      .then(function(r){ return r.json(); })
-      .then(function(j){ PARTIDA = j.idPartida; })
-      .catch(function(){});
-  }
-  $('#shell').scrollIntoView({block:'nearest'});
-}
-
-function pintarMovs(){
-  $('#movs').innerHTML = MOVIMIENTOS.map(function(m){
-    var usado = S.usados.indexOf(m.id) >= 0;
-    return '<button class="mv'+(usado?' used':'')+'" type="button" data-m="'+m.id+'"'+
-      ((usado || S.restantes<=0 || S.cerrado)?' disabled':'')+'>'+
-      '<span class="op">'+esc(m.op)+'</span>'+esc(m.label)+'</button>';
-  }).join('');
-  Array.prototype.forEach.call(document.querySelectorAll('.mv'), function(b){
-    b.addEventListener('click', function(){ jugar(b.getAttribute('data-m')); });
-  });
-}
-
-function decimales(c){ return (c==='Tasa'||c==='PctHorasExtra') ? 2 : (c==='Horas'||c==='Extra') ? 1 : 0; }
-
-function tablaApi(j){
-  var cols = j.cols || [];
-  var rows = (j.filas||[]).map(function(r){
-    return { cells: cols.map(function(c){
-      var v = r[c];
-      return (typeof v === 'number') ? fmt(v, decimales(c)) : esc(v);
-    }) };
-  });
-  return tabla(cols, rows);
-}
-
-function cajaSql(j){
-  return '<details class="sqlbox"><summary>Consulta ejecutada en SQL Server \u00b7 '+
-    (j.filas||[]).length+' filas \u00b7 '+j.ms+' ms</summary><pre>'+esc(j.sql)+'</pre></details>';
-}
-
-function mostrar(m, res, extra){
-  $('#salida').innerHTML = '<div class="gcap" style="margin-bottom:8px">'+esc(m.op)+' · '+esc(m.label)+'</div>'+
-    res.html + '<div class="pista'+(res.clave?' key':'')+'">'+esc(res.pista)+'</div>' + (extra||'');
-}
-
-function registrarMov(m, filas){
-  if (!API || !PARTIDA) return;
-  fetch('api/partida/'+PARTIDA+'/movimiento', { method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ orden:++ORDEN_MOV, operacion:m.op, dimensiones:(m.dims||[]).join(','),
-      filtros: JSON.stringify(m.where||{}), filas: filas }) }).catch(function(){});
-}
-
-function jugar(mid){
-  if (S.restantes<=0 || S.cerrado || S.usados.indexOf(mid)>=0) return;
-  var m = MOVIMIENTOS.filter(function(x){return x.id===mid;})[0];
-  var local = m.run();
-  var esClave = (mid === S.caso.clave);
-  local.clave = esClave;
-  S.usados.push(mid);
-  S.restantes--;
-  S.pistas.push({ id:mid, texto:local.pista, clave:esClave, label:m.op+' · '+m.label });
-  pintarMovs(); refrescar();
-
-  if (API && m.dims) {
-    $('#salida').innerHTML = '<p style="color:var(--panel-ink-2);margin:0;font-size:14.5px">Consultando el cubo\u2026</p>';
-    fetch('api/olap', { method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ dims:m.dims, where:m.where||{}, orden:m.orden||null }) })
-      .then(function(r){ return r.ok ? r.json() : Promise.reject(new Error('api')); })
-      .then(function(j){
-        mostrar(m, { html: tablaApi(j), pista: local.pista, clave: esClave }, cajaSql(j));
-        registrarMov(m, (j.filas||[]).length);
-      })
-      .catch(function(){ mostrar(m, local, ''); });
-  } else {
-    mostrar(m, local, '');
-  }
-}
-
-function refrescar(){
-  $('#gCaso').textContent = S.caso ? ('0'+S.caso.id) : '—';
-  $('#gMov').textContent = S.restantes;
-  $('#gPistas').textContent = S.pistas.length;
-  $('#gXP').textContent = S.caso ? Math.max(0, S.caso.xp - 25*S.usados.length) : 0;
-  if (S.pistas.length > 0 && !S.cerrado) {
-    $('#zonaAcusacion').hidden = false;
-    $('#clues').innerHTML = S.pistas.map(function(p,i){
-      return '<div class="clue"><input type="checkbox" id="p'+i+'" value="'+p.id+'">'+
-        '<label for="p'+i+'"><strong>'+esc(p.label)+'</strong> — '+esc(p.texto)+'</label></div>';
-    }).join('');
-  }
-}
-
-$('#btnAcusar').addEventListener('click', function(){
-  if (S.cerrado) return;
-  var suj = $('#selSujeto').value, cau = $('#selCausa').value;
-  if (!suj || !cau) { alerta('Elegí un sujeto y una causa antes de acusar.'); return; }
-  var citadas = Array.prototype.filter.call(document.querySelectorAll('#clues input:checked'), function(i){ return true; }).map(function(i){ return i.value; });
-  if (citadas.length === 0) { alerta('Citá al menos una pista: una acusación sin evidencia no se sostiene.'); return; }
-
-  var ok = (suj === S.caso.sujeto && cau === S.caso.causa);
-  var bonus = citadas.indexOf(S.caso.clave) >= 0 ? 100 : 0;
-  var xp = ok ? Math.max(0, S.caso.xp - 25*S.usados.length) + bonus : 0;
-  S.ultima = { sujeto:suj, causa:cau, pistas:citadas.join(','), acierto:ok, xp:xp };
-  S.cerrado = true;
-  pintarMovs();
-
-  $('#veredicto').innerHTML = '<div class="veredicto '+(ok?'win':'lose')+'">'+
-    '<h4>'+(ok?'Caso resuelto':'Acusación desestimada')+'</h4>'+
-    (ok ? '<div class="xp">+'+xp+' XP</div>' : '')+
-    '<p>'+(ok
-      ? 'La evidencia sostiene la acusación. Usaste '+S.usados.length+' de '+S.caso.movs+' movimientos'+(bonus?' y citaste la pista decisiva (+100 XP)':' — citar la pista decisiva daba 100 XP extra')+'.'
-      : 'Los datos no respaldan esa combinación de sujeto y causa. Reiniciá el caso y probá otro camino de navegación.')+'</p>'+
-    '<p style="margin-top:10px"><strong style="color:var(--panel-ink)">Regla inductiva del caso.</strong> '+esc(S.caso.regla)+'</p>'+
-    (ok ? '<div class="gactions"><input type="text" id="nombreDet" placeholder="Tu nombre, detective" style="max-width:230px">'+
-          '<button class="btn primary" id="btnGuardar" type="button">Guardar en el ranking</button></div>' : '')+
-    '</div>';
-
-  if (ok) {
-    $('#btnGuardar').addEventListener('click', function(){
-      var n = ($('#nombreDet').value||'').trim() || 'Anónimo';
-      guardar({ nombre:n, caso:S.caso.nombre, movs:S.usados.length, xp:xp });
-      $('#btnGuardar').disabled = true;
-      $('#btnGuardar').textContent = 'Guardado';
-    });
-  }
-  $('#veredicto').scrollIntoView({block:'nearest'});
-});
-
-function alerta(msg){
-  $('#veredicto').innerHTML = '<div class="veredicto lose"><p style="margin:0">'+esc(msg)+'</p></div>';
-}
-
-/* ---------- ranking (localStorage) ---------- */
-function leer(){
-  try { return JSON.parse(localStorage.getItem('minired_ranking')||'[]'); } catch(e){ return []; }
-}
-function guardar(r){
-  if (API && PARTIDA) {
-    var cuerpo = Object.assign({ detective: r.nombre }, S.ultima || {});
-    fetch('api/partida/'+PARTIDA+'/acusacion', { method:'POST',
-      headers:{'Content-Type':'application/json'}, body: JSON.stringify(cuerpo) })
-      .then(function(){ pintarRanking(); })
-      .catch(function(){});
-    return;
-  }
-  var a = leer(); a.push(r);
-  try { localStorage.setItem('minired_ranking', JSON.stringify(a)); } catch(e){}
-  pintarRanking();
-}
-function pintarRanking(){
-  if (API) {
-    fetch('api/ranking')
-      .then(function(r){ return r.ok ? r.json() : Promise.reject(new Error('api')); })
-      .then(function(a){ filasRanking((a||[]).map(function(r){
-        return { nombre:r.Detective, caso:r.NombreCaso, movs:r.Movimientos, xp:r.XP }; })); })
-      .catch(function(){ filasRanking(leer()); });
-    return;
-  }
-  filasRanking(leer());
-}
-function filasRanking(lista){
-  var a = (lista||[]).slice().sort(function(x,y){ return y.xp-x.xp; }).slice(0,12);
-  var tb = $('#tblRanking').querySelector('tbody');
-  tb.innerHTML = a.length ? a.map(function(r){
-    return '<tr><td>'+esc(r.nombre)+'</td><td>'+esc(r.caso)+'</td><td class="n">'+r.movs+'</td><td class="n"><strong>'+r.xp+'</strong></td></tr>';
-  }).join('') : '<tr><td colspan="4" style="color:var(--ink-3)">Todavía no hay partidas resueltas. Resolvé un caso en Data Detective.</td></tr>';
-}
-pintarRanking();
-}
-
-function marcarModo(){
-  var el = document.getElementById('modo');
-  if (!el) return;
-  el.hidden = false;
-  el.className = 'modo ' + (API ? 'vivo' : 'local');
-  el.textContent = API ? 'En vivo \u00b7 SQL Server' : 'Snapshot local';
-  el.title = API
-    ? 'La p\u00e1gina consulta MiniRed_DW en vivo; cada movimiento del juego ejecuta SQL en el servidor.'
-    : 'Sin backend: la p\u00e1gina usa el snapshot del cubo embebido en datos.js.';
-}
-
-fetch('api/cubo', { cache: 'no-store' })
-  .then(function(r){ return r.ok ? r.json() : null; })
-  .then(function(j){ if (j && j.kpis) { D = j; API = true; window.DATOS_ES_MUESTRA = false; } })
-  .catch(function(){})
-  .then(function(){ arrancar(); marcarModo(); });
-})();
-</script>
-</body>
+	<head>
+		<meta charset="utf-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1"
+		/>
+		<title>MiniRed · Control de Capital Humano</title>
+		<link
+			rel="icon"
+			id="dynamic-favicon"
+			href="./assets/favicon-light.png"
+			sizes="32x32"
+			type="image/png"
+		/>
+		<link
+			rel="preconnect"
+			href="https://fonts.googleapis.com"
+		/>
+		<link
+			rel="preconnect"
+			href="https://fonts.gstatic.com"
+			crossorigin
+		/>
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap"
+		/>
+		<style>
+			:root {
+				--paper: #e9ece8;
+				--card: #fbfcfa;
+				--card-2: #f2f4f0;
+				--ink: #141a18;
+				--ink-2: #4e5a56;
+				--ink-3: #78837f;
+				--rule: #cfd6d0;
+				--rule-soft: #dde2dc;
+				--brand: #9e2a2b;
+				--brand-soft: #f3dedc;
+				--brand-ink: #7a1f20;
+				--data: #1f5f6b;
+				--data-soft: #dce9eb;
+				--warn: #8a5910;
+				--warn-soft: #f2e5cc;
+				--ok: #2c6b3f;
+				--ok-soft: #dcebdf;
+				--panel: #14201f;
+				--panel-2: #1c2b29;
+				--panel-ink: #e4eae7;
+				--panel-ink-2: #93a4a0;
+				--panel-rule: #2c3e3b;
+				--f-d: "Archivo", "Helvetica Neue", Arial, sans-serif;
+				--f-b: "Source Serif 4", Georgia, serif;
+				--f-m: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+			}
+			@media (prefers-color-scheme: dark) {
+				:root:not([data-theme="light"]) {
+					--paper: #0e1211;
+					--card: #161c1a;
+					--card-2: #1c2422;
+					--ink: #e6eae7;
+					--ink-2: #9eaaa5;
+					--ink-3: #7b8783;
+					--rule: #2b3532;
+					--rule-soft: #232b29;
+					--brand: #de7a72;
+					--brand-soft: #2e1b1a;
+					--brand-ink: #efa79f;
+					--data: #6fbac5;
+					--data-soft: #14282c;
+					--warn: #d9a441;
+					--warn-soft: #2c2313;
+					--ok: #7cc08f;
+					--ok-soft: #17251a;
+					--panel: #0a0f0e;
+					--panel-2: #141d1c;
+					--panel-rule: #243230;
+				}
+			}
+			:root[data-theme="dark"] {
+				--paper: #0e1211;
+				--card: #161c1a;
+				--card-2: #1c2422;
+				--ink: #e6eae7;
+				--ink-2: #9eaaa5;
+				--ink-3: #7b8783;
+				--rule: #2b3532;
+				--rule-soft: #232b29;
+				--brand: #de7a72;
+				--brand-soft: #2e1b1a;
+				--brand-ink: #efa79f;
+				--data: #6fbac5;
+				--data-soft: #14282c;
+				--warn: #d9a441;
+				--warn-soft: #2c2313;
+				--ok: #7cc08f;
+				--ok-soft: #17251a;
+				--panel: #0a0f0e;
+				--panel-2: #141d1c;
+				--panel-rule: #243230;
+			}
+			* {
+				box-sizing: border-box;
+			}
+			html {
+				scroll-behavior: smooth;
+			}
+			body {
+				margin: 0;
+				background: var(--paper);
+				color: var(--ink);
+				font-family: var(--f-b);
+				font-size: 16.5px;
+				line-height: 1.62;
+				-webkit-font-smoothing: antialiased;
+			}
+			.wrap {
+				max-width: 1080px;
+				margin: 0 auto;
+				padding: 0 22px;
+			}
+			h1,
+			h2,
+			h3,
+			h4 {
+				font-family: var(--f-d);
+				margin: 0;
+			}
+			p {
+				margin: 0 0 14px;
+				max-width: 72ch;
+			}
+			a {
+				color: var(--brand);
+			}
+			code {
+				font-family: var(--f-m);
+				font-size: 0.85em;
+				background: var(--card-2);
+				border: 1px solid var(--rule-soft);
+				padding: 1px 5px;
+				border-radius: 3px;
+			}
+
+			/* nav */
+			.topbar {
+				position: sticky;
+				top: 0;
+				z-index: 50;
+				background: var(--panel);
+				color: var(--panel-ink);
+				border-bottom: 1px solid var(--panel-rule);
+			}
+			.topbar .wrap {
+				display: flex;
+				align-items: center;
+				gap: 22px;
+				height: 52px;
+				flex-wrap: wrap;
+			}
+			.brandmark {
+				font-family: var(--f-d);
+				font-weight: 700;
+				font-size: 15px;
+				letter-spacing: -0.01em;
+				white-space: nowrap;
+			}
+			.brandmark b {
+				color: #de7a72;
+			}
+			.topnav {
+				display: flex;
+				gap: 16px;
+				font-family: var(--f-d);
+				font-size: 12.5px;
+				font-weight: 500;
+				overflow-x: auto;
+			}
+			.topnav a {
+				color: var(--panel-ink-2);
+				text-decoration: none;
+				white-space: nowrap;
+			}
+			.topnav a:hover {
+				color: var(--panel-ink);
+			}
+			.topnav a:focus-visible {
+				outline: 2px solid #de7a72;
+				outline-offset: 3px;
+				border-radius: 2px;
+			}
+
+			/* banner muestra */
+			.muestra {
+				background: var(--warn-soft);
+				color: var(--warn);
+				border-bottom: 1px solid var(--warn);
+				font-family: var(--f-d);
+				font-size: 12.5px;
+				font-weight: 600;
+				text-align: center;
+				padding: 8px 16px;
+			}
+
+			/* hero */
+			.hero {
+				padding: 52px 0 34px;
+				border-bottom: 1px solid var(--rule);
+			}
+			.eyebrow {
+				font-family: var(--f-d);
+				font-size: 11px;
+				font-weight: 600;
+				letter-spacing: 0.17em;
+				text-transform: uppercase;
+				color: var(--brand);
+			}
+			.hero h1 {
+				font-size: clamp(30px, 4.8vw, 46px);
+				font-weight: 700;
+				line-height: 1.06;
+				letter-spacing: -0.022em;
+				margin: 12px 0 12px;
+				text-wrap: balance;
+			}
+			.hero p {
+				font-size: 18px;
+				color: var(--ink-2);
+				max-width: 60ch;
+			}
+
+			/* kpis */
+			.kpis {
+				display: grid;
+				grid-template-columns: repeat(2, 1fr);
+				gap: 1px;
+				background: var(--rule);
+				border: 1px solid var(--rule);
+				border-radius: 4px;
+				overflow: hidden;
+				margin: 26px 0 0;
+			}
+			@media (min-width: 720px) {
+				.kpis {
+					grid-template-columns: repeat(4, 1fr);
+				}
+			}
+			.kpi {
+				background: var(--card);
+				padding: 17px 18px;
+			}
+			.kpi .k {
+				font-family: var(--f-d);
+				font-size: 10.5px;
+				font-weight: 600;
+				letter-spacing: 0.11em;
+				text-transform: uppercase;
+				color: var(--ink-3);
+			}
+			.kpi .v {
+				font-family: var(--f-d);
+				font-size: 27px;
+				font-weight: 700;
+				letter-spacing: -0.02em;
+				font-variant-numeric: tabular-nums;
+				margin-top: 4px;
+				line-height: 1.1;
+			}
+			.kpi .s {
+				font-size: 13px;
+				color: var(--ink-2);
+				line-height: 1.35;
+				margin-top: 2px;
+			}
+
+			/* secciones */
+			section {
+				padding: 44px 0;
+				border-bottom: 1px solid var(--rule);
+				scroll-margin-top: 56px;
+			}
+			.sh {
+				display: flex;
+				gap: 14px;
+				align-items: baseline;
+				margin-bottom: 16px;
+			}
+			.sh .n {
+				font-family: var(--f-d);
+				font-weight: 700;
+				font-size: 12px;
+				color: var(--brand);
+				padding-top: 6px;
+				font-variant-numeric: tabular-nums;
+			}
+			.sh h2 {
+				font-size: clamp(22px, 3vw, 28px);
+				font-weight: 700;
+				letter-spacing: -0.017em;
+				text-wrap: balance;
+			}
+			.lede {
+				color: var(--ink-2);
+				max-width: 70ch;
+			}
+
+			/* grids */
+			.g2 {
+				display: grid;
+				gap: 16px;
+			}
+			@media (min-width: 820px) {
+				.g2 {
+					grid-template-columns: 1fr 1fr;
+				}
+			}
+			.g3 {
+				display: grid;
+				gap: 14px;
+			}
+			@media (min-width: 760px) {
+				.g3 {
+					grid-template-columns: repeat(3, 1fr);
+				}
+			}
+
+			.box {
+				background: var(--card);
+				border: 1px solid var(--rule);
+				border-radius: 4px;
+				padding: 18px 20px;
+			}
+			.box h3 {
+				font-size: 15.5px;
+				font-weight: 600;
+				margin-bottom: 10px;
+			}
+			.box h4 {
+				font-size: 11px;
+				font-weight: 600;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				color: var(--ink-2);
+				margin-bottom: 8px;
+			}
+
+			/* barras */
+			.bars {
+				display: flex;
+				flex-direction: column;
+				gap: 9px;
+				margin-top: 4px;
+			}
+			.bar {
+				display: grid;
+				grid-template-columns: 118px 1fr 62px;
+				gap: 10px;
+				align-items: center;
+				font-size: 13.5px;
+			}
+			.bar .bl {
+				font-family: var(--f-d);
+				font-weight: 500;
+				color: var(--ink-2);
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+			.bar .bt {
+				height: 16px;
+				background: var(--card-2);
+				border-radius: 2px;
+				overflow: hidden;
+			}
+			.bar .bf {
+				height: 100%;
+				background: var(--data);
+				border-radius: 2px;
+			}
+			.bar.hi .bf {
+				background: var(--brand);
+			}
+			.bar .bv {
+				font-family: var(--f-m);
+				font-size: 12.5px;
+				text-align: right;
+				font-variant-numeric: tabular-nums;
+			}
+
+			/* tabla */
+			.tw {
+				overflow-x: auto;
+				border: 1px solid var(--rule);
+				border-radius: 4px;
+				background: var(--card);
+			}
+			table {
+				border-collapse: collapse;
+				width: 100%;
+				font-size: 14px;
+				min-width: 440px;
+			}
+			th {
+				font-family: var(--f-d);
+				font-weight: 600;
+				font-size: 10.5px;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+				color: var(--ink-2);
+				text-align: left;
+				padding: 10px 13px;
+				border-bottom: 1px solid var(--rule);
+				background: var(--card-2);
+				white-space: nowrap;
+			}
+			td {
+				padding: 9px 13px;
+				border-bottom: 1px solid var(--rule-soft);
+				vertical-align: top;
+			}
+			tbody tr:last-child td {
+				border-bottom: 0;
+			}
+			td.n,
+			th.n {
+				text-align: right;
+				font-family: var(--f-m);
+				font-size: 13px;
+				font-variant-numeric: tabular-nums;
+				white-space: nowrap;
+			}
+			tr.mark td {
+				background: var(--brand-soft);
+			}
+
+			.tag {
+				font-family: var(--f-d);
+				font-size: 10px;
+				font-weight: 600;
+				letter-spacing: 0.07em;
+				text-transform: uppercase;
+				padding: 3px 7px;
+				border-radius: 3px;
+				display: inline-block;
+				white-space: nowrap;
+			}
+			.tag.ok {
+				background: var(--ok-soft);
+				color: var(--ok);
+			}
+			.tag.no {
+				background: var(--card-2);
+				color: var(--ink-3);
+				border: 1px solid var(--rule);
+			}
+			.tag.hot {
+				background: var(--brand-soft);
+				color: var(--brand-ink);
+			}
+
+			.note {
+				border: 1px solid var(--rule);
+				border-left: 3px solid var(--data);
+				background: var(--card);
+				border-radius: 0 4px 4px 0;
+				padding: 15px 18px;
+				margin: 0 0 16px;
+			}
+			.note.flag {
+				border-left-color: var(--brand);
+			}
+			.note.warn {
+				border-left-color: var(--warn);
+			}
+			.note p:last-child {
+				margin-bottom: 0;
+			}
+			.note h4 {
+				font-size: 11px;
+				font-weight: 600;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				color: var(--ink-2);
+				margin-bottom: 6px;
+			}
+
+			/* fases kdd */
+			.fases {
+				display: grid;
+				gap: 10px;
+			}
+			@media (min-width: 900px) {
+				.fases {
+					grid-template-columns: repeat(5, 1fr);
+				}
+			}
+			.fase {
+				background: var(--card);
+				border: 1px solid var(--rule);
+				border-radius: 4px;
+				padding: 14px 15px;
+			}
+			.fase.hot {
+				border-color: var(--brand);
+				background: var(--brand-soft);
+			}
+			.fase .fn {
+				font-family: var(--f-d);
+				font-size: 10.5px;
+				font-weight: 700;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+				color: var(--brand);
+				margin-bottom: 5px;
+			}
+			.fase .ft {
+				font-family: var(--f-d);
+				font-weight: 600;
+				font-size: 14.5px;
+				margin-bottom: 5px;
+			}
+			.fase .fd {
+				font-size: 13.5px;
+				color: var(--ink-2);
+				line-height: 1.42;
+			}
+
+			/* ============ JUEGO ============ */
+			#juego {
+				background: var(--panel);
+				color: var(--panel-ink);
+				border-bottom: 1px solid var(--panel-rule);
+			}
+			#juego .sh h2,
+			#juego h3,
+			#juego h4 {
+				color: var(--panel-ink);
+			}
+			#juego .lede {
+				color: var(--panel-ink-2);
+			}
+			#juego .sh .n {
+				color: #de7a72;
+			}
+			.gameshell {
+				margin-top: 20px;
+				border: 1px solid var(--panel-rule);
+				border-radius: 5px;
+				background: var(--panel-2);
+				overflow: hidden;
+			}
+			.gamebar {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 10px 22px;
+				align-items: center;
+				padding: 13px 18px;
+				border-bottom: 1px solid var(--panel-rule);
+				background: #0f1817;
+			}
+			.gstat {
+				font-family: var(--f-d);
+				font-size: 12px;
+				color: var(--panel-ink-2);
+				display: flex;
+				align-items: center;
+				gap: 7px;
+			}
+			.gstat b {
+				font-size: 15px;
+				color: var(--panel-ink);
+				font-variant-numeric: tabular-nums;
+				font-weight: 700;
+			}
+			.gbody {
+				display: grid;
+				gap: 0;
+			}
+			@media (min-width: 880px) {
+				.gbody {
+					grid-template-columns: 264px 1fr;
+				}
+			}
+			.gleft {
+				border-right: 1px solid var(--panel-rule);
+				padding: 16px;
+			}
+			@media (max-width: 879px) {
+				.gleft {
+					border-right: 0;
+					border-bottom: 1px solid var(--panel-rule);
+				}
+			}
+			.gright {
+				padding: 16px 18px;
+				min-width: 0;
+			}
+			.gcap {
+				font-family: var(--f-d);
+				font-size: 10.5px;
+				font-weight: 600;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				color: var(--panel-ink-2);
+				margin-bottom: 9px;
+			}
+			.mv {
+				display: block;
+				width: 100%;
+				text-align: left;
+				background: #182422;
+				color: var(--panel-ink);
+				border: 1px solid var(--panel-rule);
+				border-radius: 4px;
+				padding: 9px 11px;
+				margin-bottom: 7px;
+				cursor: pointer;
+				font-family: var(--f-d);
+				font-size: 13px;
+				line-height: 1.3;
+			}
+			.mv:hover:not(:disabled) {
+				border-color: #de7a72;
+				background: #1f2e2c;
+			}
+			.mv:focus-visible {
+				outline: 2px solid #de7a72;
+				outline-offset: 2px;
+			}
+			.mv:disabled {
+				opacity: 0.38;
+				cursor: not-allowed;
+			}
+			.mv .op {
+				display: block;
+				font-size: 9.5px;
+				font-weight: 700;
+				letter-spacing: 0.11em;
+				text-transform: uppercase;
+				color: #8fbdc4;
+				margin-bottom: 2px;
+			}
+			.mv.used {
+				border-color: #3a5350;
+				opacity: 0.55;
+			}
+			.gout {
+				background: #0c1413;
+				border: 1px solid var(--panel-rule);
+				border-radius: 4px;
+				padding: 14px 16px;
+				min-height: 150px;
+			}
+			.gout table {
+				min-width: 0;
+				font-size: 13px;
+			}
+			.gout th {
+				background: #111c1a;
+				color: var(--panel-ink-2);
+				border-bottom-color: var(--panel-rule);
+				padding: 7px 10px;
+			}
+			.gout td {
+				color: var(--panel-ink);
+				border-bottom-color: var(--panel-rule);
+				padding: 6px 10px;
+			}
+			.gout tr.mark td {
+				background: #2b1a19;
+			}
+			.gout .tw {
+				border-color: var(--panel-rule);
+				background: transparent;
+			}
+			.pista {
+				margin-top: 11px;
+				padding: 10px 13px;
+				background: #1b2a28;
+				border-left: 3px solid #6fbac5;
+				border-radius: 0 3px 3px 0;
+				font-size: 14px;
+				color: var(--panel-ink);
+			}
+			.pista.key {
+				border-left-color: #de7a72;
+			}
+			.clues {
+				margin-top: 14px;
+				display: flex;
+				flex-direction: column;
+				gap: 6px;
+			}
+			.clue {
+				display: flex;
+				gap: 9px;
+				align-items: flex-start;
+				font-size: 13px;
+				color: var(--panel-ink-2);
+				background: #131f1e;
+				border: 1px solid var(--panel-rule);
+				border-radius: 3px;
+				padding: 8px 11px;
+			}
+			.clue input {
+				margin-top: 3px;
+				accent-color: #de7a72;
+			}
+			.clue label {
+				cursor: pointer;
+			}
+			.gfields {
+				display: grid;
+				gap: 10px;
+				margin-top: 12px;
+			}
+			@media (min-width: 620px) {
+				.gfields {
+					grid-template-columns: 1fr 1fr;
+				}
+			}
+			select,
+			input[type="text"] {
+				width: 100%;
+				background: #182422;
+				color: var(--panel-ink);
+				border: 1px solid var(--panel-rule);
+				border-radius: 4px;
+				padding: 9px 10px;
+				font-family: var(--f-d);
+				font-size: 13.5px;
+			}
+			select:focus,
+			input:focus {
+				outline: 2px solid #de7a72;
+				outline-offset: 1px;
+			}
+			.btn {
+				font-family: var(--f-d);
+				font-weight: 600;
+				font-size: 13.5px;
+				border-radius: 4px;
+				padding: 10px 18px;
+				cursor: pointer;
+				border: 1px solid transparent;
+			}
+			.btn.primary {
+				background: #9e2a2b;
+				color: #fff;
+				border-color: #9e2a2b;
+			}
+			.btn.primary:hover {
+				background: #b33334;
+			}
+			.btn.ghost {
+				background: transparent;
+				color: var(--panel-ink);
+				border-color: var(--panel-rule);
+			}
+			.btn.ghost:hover {
+				border-color: #de7a72;
+			}
+			.btn:focus-visible {
+				outline: 2px solid #de7a72;
+				outline-offset: 2px;
+			}
+			.btn:disabled {
+				opacity: 0.4;
+				cursor: not-allowed;
+			}
+			.gactions {
+				display: flex;
+				gap: 9px;
+				flex-wrap: wrap;
+				margin-top: 14px;
+			}
+			.veredicto {
+				margin-top: 14px;
+				border-radius: 4px;
+				padding: 16px 18px;
+				border: 1px solid;
+			}
+			.veredicto.win {
+				background: #14251a;
+				border-color: #3e7a50;
+			}
+			.veredicto.lose {
+				background: #2b1a19;
+				border-color: #8a4340;
+			}
+			.veredicto h4 {
+				font-family: var(--f-d);
+				font-size: 16px;
+				font-weight: 700;
+				margin-bottom: 7px;
+				letter-spacing: -0.01em;
+				text-transform: none;
+				color: var(--panel-ink);
+			}
+			.veredicto p {
+				color: var(--panel-ink-2);
+				font-size: 14.5px;
+				max-width: none;
+			}
+			.veredicto .xp {
+				font-family: var(--f-d);
+				font-size: 28px;
+				font-weight: 700;
+				color: #e8b04b;
+				font-variant-numeric: tabular-nums;
+			}
+			.casos {
+				display: grid;
+				gap: 11px;
+				margin-top: 16px;
+			}
+			@media (min-width: 760px) {
+				.casos {
+					grid-template-columns: repeat(3, 1fr);
+				}
+			}
+			.caso {
+				background: var(--panel-2);
+				border: 1px solid var(--panel-rule);
+				border-radius: 4px;
+				padding: 15px;
+				text-align: left;
+				cursor: pointer;
+				color: var(--panel-ink);
+				font-family: inherit;
+			}
+			.caso:hover {
+				border-color: #de7a72;
+			}
+			.caso:focus-visible {
+				outline: 2px solid #de7a72;
+				outline-offset: 2px;
+			}
+			.caso.on {
+				border-color: #de7a72;
+				background: #22100f;
+			}
+			.caso .cn {
+				font-family: var(--f-d);
+				font-size: 10px;
+				font-weight: 600;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				color: var(--panel-ink-2);
+			}
+			.caso .ct {
+				font-family: var(--f-d);
+				font-weight: 700;
+				font-size: 16px;
+				margin: 5px 0 6px;
+				letter-spacing: -0.01em;
+			}
+			.caso .cd {
+				font-size: 13.5px;
+				color: var(--panel-ink-2);
+				line-height: 1.45;
+			}
+			.caso .cm {
+				margin-top: 9px;
+				display: flex;
+				gap: 7px;
+				flex-wrap: wrap;
+				font-family: var(--f-d);
+				font-size: 11px;
+				font-weight: 600;
+				color: var(--panel-ink-2);
+			}
+			.caso .cm span {
+				background: #0f1817;
+				border: 1px solid var(--panel-rule);
+				padding: 2px 7px;
+				border-radius: 3px;
+			}
+
+			.sqlbox {
+				margin-top: 11px;
+				border: 1px solid var(--panel-rule);
+				border-radius: 4px;
+				background: #0a100f;
+			}
+			.sqlbox summary {
+				cursor: pointer;
+				padding: 8px 12px;
+				font-family: var(--f-d);
+				font-size: 12px;
+				color: #8fbdc4;
+				list-style: none;
+			}
+			.sqlbox summary::-webkit-details-marker {
+				display: none;
+			}
+			.sqlbox summary:before {
+				content: "\25B8 ";
+				color: #8fbdc4;
+			}
+			.sqlbox[open] summary:before {
+				content: "\25BE ";
+			}
+			.sqlbox pre {
+				margin: 0;
+				padding: 12px 14px;
+				font-family: var(--f-m);
+				font-size: 12px;
+				line-height: 1.55;
+				color: var(--panel-ink);
+				overflow-x: auto;
+				border-top: 1px solid var(--panel-rule);
+				white-space: pre;
+			}
+			.sqlbox.claro {
+				background: var(--card-2);
+				border-color: var(--rule);
+				margin-top: 12px;
+			}
+			.sqlbox.claro summary {
+				color: var(--data);
+			}
+			.sqlbox.claro summary:before {
+				color: var(--data);
+			}
+			.sqlbox.claro pre {
+				color: var(--ink);
+				border-top-color: var(--rule);
+			}
+			.modo {
+				font-family: var(--f-d);
+				font-size: 10px;
+				font-weight: 700;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+				padding: 4px 9px;
+				border-radius: 3px;
+				margin-left: auto;
+				white-space: nowrap;
+			}
+			.modo.vivo {
+				background: #14251a;
+				color: #7cc08f;
+				border: 1px solid #3e7a50;
+			}
+			.modo.local {
+				background: #2c2313;
+				color: #d9a441;
+				border: 1px solid #8a6a20;
+			}
+			footer {
+				padding: 32px 0 46px;
+				font-family: var(--f-d);
+				font-size: 12.5px;
+				color: var(--ink-3);
+			}
+			@media (prefers-reduced-motion: reduce) {
+				html {
+					scroll-behavior: auto;
+				}
+				* {
+					transition: none !important;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="topbar">
+			<div class="wrap">
+				<div class="brandmark">Mini<b>Red</b> · Capital Humano</div>
+				<nav class="topnav">
+					<a href="#auditoria">Auditoría</a>
+					<a href="#kdd">Proceso KDD</a>
+					<a href="#tablero">Tablero</a>
+					<a href="#reglas">Reglas</a>
+					<a href="#juego">Data Detective</a>
+					<a href="#ranking">Ranking</a>
+				</nav>
+				<span
+					id="modo"
+					class="modo"
+					hidden
+				></span>
+			</div>
+		</div>
+
+		<div
+			id="bannerMuestra"
+			class="muestra"
+			hidden
+		>
+			Datos de muestra — reemplazá <code>datos.js</code> con la salida de
+			la sección 7 de <code>02_cubo.sql</code>
+		</div>
+
+		<div class="wrap">
+			<header class="hero">
+				<div class="eyebrow">
+					Consultora analítica · Gerencia de RRHH
+				</div>
+				<h1>Control de personal y productividad operativa</h1>
+				<p>
+					MiniRed nos pidió controlar ausentismo, horas extra y costo
+					laboral por sucursal y turno. Su Data Warehouse no lo
+					permitía, así que diseñamos el data mart que faltaba — y
+					encontramos que las señales de personal anticipan el cierre
+					de un local.
+				</p>
+				<div
+					class="kpis"
+					id="kpis"
+				></div>
+			</header>
+
+			<!-- AUDITORIA -->
+			<section id="auditoria">
+				<div class="sh">
+					<span class="n">01</span>
+					<h2>Auditoría del dato</h2>
+				</div>
+				<p class="lede">
+					Antes de analizar, auditamos lo que la base realmente
+					contiene. Cinco hallazgos condicionan todo lo demás.
+				</p>
+
+				<div
+					class="g2"
+					style="margin-top: 18px"
+				>
+					<div class="box">
+						<h4>Clasificación de variables</h4>
+						<div
+							class="tw"
+							style="border: 0"
+						>
+							<table>
+								<thead>
+									<tr>
+										<th>Continuas</th>
+										<th>Discretas / categóricas</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<code>ImporteTotal</code>,
+											<code>CostoUnitario</code>,
+											<code>HorasTrabajadas</code>,
+											<code>HorasExtra</code>,
+											<code>MinutosTardanza</code>,
+											<code>MontoBruto</code>
+										</td>
+										<td>
+											<code>Zona</code>,
+											<code>Turno</code>,
+											<code>TipoPago</code>,
+											<code>TipoContrato</code>,
+											<code>TipoAusencia</code>,
+											<code>EsFinDeSemana</code>,
+											<code>IdRubro</code>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<p
+							style="
+								margin: 12px 0 0;
+								font-size: 14.5px;
+								color: var(--ink-2);
+							"
+						>
+							<strong>Trampa:</strong> <code>IdRubro</code> vale 1
+							a 5 y <code>EsFinDeSemana</code> vale 0 o 1. Son
+							números, pero el promedio no significa nada: son
+							etiquetas disfrazadas. La antigüedad, que sí es
+							continua, la <strong>discretizamos</strong> en
+							tramos para poder minar reglas.
+						</p>
+					</div>
+					<div class="box">
+						<h4>Hallazgos</h4>
+						<div
+							class="tw"
+							style="border: 0"
+						>
+							<table>
+								<tbody>
+									<tr>
+										<td>
+											<span class="tag hot">A-01</span>
+										</td>
+										<td>
+											Producto, cajero, medio de pago,
+											cantidad y costo se generan con
+											<code>CHECKSUM(NEWID())</code>: son
+											uniformes independientes.
+											<strong
+												>No hay patrones que descubrir
+												ahí.</strong
+											>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="tag hot">A-02</span>
+										</td>
+										<td>
+											El único patrón real es territorial:
+											las ventas se acotan al rango
+											apertura–cierre de cada local. San
+											Justo cerró el 31-08-2025.
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="tag hot">A-03</span>
+										</td>
+										<td>
+											<code>EsFinDeSemana</code> es una
+											trampa: 28,6 % de los tickets caen
+											sábado o domingo porque son 2 de 7
+											días.
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="tag hot">A-04</span>
+										</td>
+										<td>
+											<code>Dim_Cajero</code> no está
+											ligada a sucursal: un cajero "vende"
+											en los 14 locales el mismo día.
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="tag hot">A-05</span>
+										</td>
+										<td>
+											El script anuncia 50.000 filas de
+											ventas; genera 20.000.
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+
+				<div
+					class="note flag"
+					style="margin-top: 16px"
+				>
+					<h4>Declaración de supuestos</h4>
+					<p>
+						El data mart de RRHH no existía: lo generamos nosotros.
+						Los patrones sembrados están declarados por adelantado
+						en la documentación. Lo que se demuestra acá no es que
+						esos patrones existan, sino que
+						<strong
+							>el proceso de minería los recupera partiendo del
+							dato y descarta los que no sembramos</strong
+						>.
+					</p>
+				</div>
+			</section>
+
+			<!-- KDD -->
+			<section id="kdd">
+				<div class="sh">
+					<span class="n">02</span>
+					<h2>Proceso KDD</h2>
+				</div>
+				<p class="lede">
+					KDD es el proceso completo. La minería de datos es solamente
+					la cuarta fase, marcada en rojo.
+				</p>
+				<div
+					class="fases"
+					style="margin-top: 18px"
+				>
+					<div class="fase">
+						<div class="fn">Fase 1</div>
+						<div class="ft">Selección</div>
+						<div class="fd">
+							2024–2025 completos; se descartan sucursales fuera
+							de su ventana de operación.
+						</div>
+					</div>
+					<div class="fase">
+						<div class="fn">Fase 2</div>
+						<div class="ft">Preprocesamiento</div>
+						<div class="fd">
+							Se detecta que <code>Dim_Cajero</code> no está
+							ligada a sucursal; se controla que no haya
+							asistencias con el local cerrado.
+						</div>
+					</div>
+					<div class="fase">
+						<div class="fn">Fase 3</div>
+						<div class="ft">Transformación</div>
+						<div class="fd">
+							Vista ancha del cubo, indicadores derivados y
+							discretización de la antigüedad en tramos.
+						</div>
+					</div>
+					<div class="fase hot">
+						<div class="fn">Fase 4</div>
+						<div class="ft">Minería</div>
+						<div class="fd">
+							Reglas de asociación entre turno, contrato,
+							antigüedad, sucursal y ausentismo.
+						</div>
+					</div>
+					<div class="fase">
+						<div class="fn">Fase 5</div>
+						<div class="ft">Interpretación</div>
+						<div class="fd">
+							Validación contra un año que el método no vio y
+							control negativo.
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- TABLERO -->
+			<section id="tablero">
+				<div class="sh">
+					<span class="n">03</span>
+					<h2>Tablero ejecutivo</h2>
+				</div>
+				<p class="lede">
+					Agregaciones directas del cubo
+					<code>vw_Cubo_CapitalHumano</code>.
+				</p>
+				<div
+					class="g2"
+					style="margin-top: 18px"
+				>
+					<div class="box">
+						<h3>Tasa de ausentismo por turno</h3>
+						<div
+							class="bars"
+							id="chTurno"
+						></div>
+					</div>
+					<div class="box">
+						<h3>Tasa de ausentismo por zona</h3>
+						<div
+							class="bars"
+							id="chZona"
+						></div>
+					</div>
+				</div>
+				<div
+					class="g2"
+					style="margin-top: 16px"
+				>
+					<div class="box">
+						<h3>Horas extra por empleado, por sucursal</h3>
+						<div
+							class="bars"
+							id="chExtra"
+						></div>
+					</div>
+					<div class="box">
+						<h3>Ausentismo por contrato y antigüedad</h3>
+						<div
+							class="bars"
+							id="chContrato"
+						></div>
+					</div>
+				</div>
+				<div
+					class="box"
+					style="margin-top: 16px"
+				>
+					<h3>San Justo · evolución mensual 2025 hasta el cierre</h3>
+					<div
+						class="bars"
+						id="chSanJusto"
+					></div>
+				</div>
+			</section>
+
+			<!-- REGLAS -->
+			<section id="reglas">
+				<div class="sh">
+					<span class="n">04</span>
+					<h2>Reglas inductivas</h2>
+				</div>
+				<p class="lede">
+					Cada regla tiene forma
+					<strong>SI ⟨antecedente⟩ ENTONCES ausencia</strong>. El
+					<em>lift</em> es el que decide: en 1 la condición no aporta
+					nada.
+				</p>
+				<div
+					class="tw"
+					style="margin-top: 16px"
+				>
+					<table id="tblReglas">
+						<thead>
+							<tr>
+								<th>Regla</th>
+								<th class="n">Soporte</th>
+								<th class="n">Confianza</th>
+								<th class="n">Base</th>
+								<th class="n">Lift</th>
+								<th>Veredicto</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+				</div>
+
+				<div
+					class="g2"
+					style="margin-top: 16px"
+				>
+					<div class="box">
+						<h3>Validación fuera de muestra</h3>
+						<p style="font-size: 14.5px; color: var(--ink-2)">
+							Las reglas se formulan mirando 2024 y se verifican
+							contra 2025, que el método no vio. Si las dos
+							columnas dan parecido, la regla es estable y no
+							memorización del ruido.
+						</p>
+						<div
+							class="tw"
+							style="border: 0"
+						>
+							<table id="tblFuera">
+								<thead>
+									<tr>
+										<th>Turno</th>
+										<th class="n">2024</th>
+										<th class="n">2025</th>
+										<th class="n">Δ</th>
+									</tr>
+								</thead>
+								<tbody></tbody>
+							</table>
+						</div>
+					</div>
+					<div class="box">
+						<h3>Control negativo</h3>
+						<p style="font-size: 14.5px; color: var(--ink-2)">
+							Corremos el mismo método sobre una relación que
+							sabemos inexistente. Si el método "encontrara" algo
+							acá, no podríamos creerle nada de lo demás. Y la
+							trampa del fin de semana de la base provista:
+						</p>
+						<div
+							class="note warn"
+							style="margin: 0"
+						>
+							<p style="font-size: 14.5px">
+								<strong
+									>28,6 % de los tickets caen sábado o
+									domingo.</strong
+								>
+								No es comportamiento de los clientes: sábado y
+								domingo son 2 de 7 días, y 2 ÷ 7 = 28,6 %. Es
+								aritmética del calendario.
+							</p>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+
+		<!-- JUEGO -->
+		<section id="juego">
+			<div class="wrap">
+				<div class="sh">
+					<span class="n">05</span>
+					<h2>Data Detective</h2>
+				</div>
+				<p class="lede">
+					No hay preguntas. Hay un caso, un presupuesto de movimientos
+					de investigación y una acusación final.
+					<strong
+						>Cada movimiento es una operación OLAP real sobre el
+						cubo</strong
+					>: drill-down, roll-up, slice y dice. Gastá los movimientos
+					con criterio.
+				</p>
+
+				<div
+					class="casos"
+					id="casos"
+				></div>
+
+				<div
+					class="gameshell"
+					id="shell"
+					hidden
+				>
+					<div class="gamebar">
+						<div class="gstat">Caso <b id="gCaso">—</b></div>
+						<div class="gstat">
+							Movimientos restantes <b id="gMov">0</b>
+						</div>
+						<div class="gstat">Pistas <b id="gPistas">0</b></div>
+						<div class="gstat">XP en juego <b id="gXP">0</b></div>
+						<button
+							class="btn ghost"
+							style="margin-left: auto"
+							id="btnReset"
+							type="button"
+						>
+							Reiniciar caso
+						</button>
+					</div>
+					<div class="gbody">
+						<div class="gleft">
+							<div class="gcap">Operaciones disponibles</div>
+							<div id="movs"></div>
+						</div>
+						<div class="gright">
+							<div class="gcap">Resultado de la consulta</div>
+							<div
+								class="gout"
+								id="salida"
+							>
+								<p
+									style="
+										color: var(--panel-ink-2);
+										margin: 0;
+										font-size: 14.5px;
+									"
+								>
+									Elegí una operación de la izquierda para
+									empezar a investigar.
+								</p>
+							</div>
+
+							<div
+								id="zonaAcusacion"
+								hidden
+							>
+								<div
+									class="gcap"
+									style="margin-top: 18px"
+								>
+									Pistas reunidas — citá al menos una en tu
+									acusación
+								</div>
+								<div
+									class="clues"
+									id="clues"
+								></div>
+								<div
+									class="gcap"
+									style="margin-top: 16px"
+								>
+									Acusación
+								</div>
+								<div class="gfields">
+									<select
+										id="selSujeto"
+										aria-label="Sujeto acusado"
+									></select>
+									<select
+										id="selCausa"
+										aria-label="Causa"
+									></select>
+								</div>
+								<div class="gactions">
+									<button
+										class="btn primary"
+										id="btnAcusar"
+										type="button"
+									>
+										Presentar acusación
+									</button>
+								</div>
+							</div>
+
+							<div id="veredicto"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<div class="wrap">
+			<section id="ranking">
+				<div class="sh">
+					<span class="n">06</span>
+					<h2>Ranking</h2>
+				</div>
+				<p class="lede">
+					Partidas resueltas en este navegador. En la versión con
+					backend, esta tabla se persiste en SQL Server junto con cada
+					movimiento OLAP que hizo el jugador — un dataset propio,
+					generado por la landing.
+				</p>
+				<div
+					class="tw"
+					style="margin-top: 16px"
+				>
+					<table id="tblRanking">
+						<thead>
+							<tr>
+								<th>Detective</th>
+								<th>Caso</th>
+								<th class="n">Movimientos</th>
+								<th class="n">XP</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+				</div>
+			</section>
+
+			<footer>
+				MiniRed S.A. · Trabajo Práctico Unidad 3 · Base de Datos
+				Aplicada, UAI · Perspectiva Capital Humano × Expansión
+				Territorial
+			</footer>
+		</div>
+
+		<script src="datos.js"></script>
+		<script>
+			(function () {
+				"use strict";
+				var D = window.DATOS || {};
+				var API = false,
+					PARTIDA = null,
+					ORDEN_MOV = 0;
+				var $ = function (s) {
+					return document.querySelector(s);
+				};
+
+				function arrancar() {
+					var fmt = function (n, d) {
+						return n == null || isNaN(n)
+							? "—"
+							: Number(n).toLocaleString("es-AR", {
+									minimumFractionDigits: d || 0,
+									maximumFractionDigits: d || 0,
+								});
+					};
+					var pct = function (n) {
+						return n == null || isNaN(n)
+							? "—"
+							: Number(n).toFixed(2).replace(".", ",") + " %";
+					};
+					var esc = function (s) {
+						return String(s == null ? "" : s).replace(
+							/[&<>"]/g,
+							function (c) {
+								return {
+									"&": "&amp;",
+									"<": "&lt;",
+									">": "&gt;",
+									'"': "&quot;",
+								}[c];
+							},
+						);
+					};
+
+					if (window.DATOS_ES_MUESTRA)
+						$("#bannerMuestra").hidden = false;
+
+					/* ---------- KPIs ---------- */
+					var k = D.kpis || {};
+					$("#kpis").innerHTML = [
+						[
+							"Tasa de ausentismo",
+							pct(k.TasaAusentismo),
+							fmt(k.Jornadas) + " jornadas analizadas",
+						],
+						[
+							"Dotación",
+							fmt(k.Empleados),
+							"empleados en " + fmt(k.Sucursales) + " sucursales",
+						],
+						[
+							"Horas extra",
+							fmt(k.HorasExtra, 1),
+							"sobre " +
+								fmt(k.HorasTrabajadas) +
+								" horas trabajadas",
+						],
+						[
+							"Costo laboral",
+							"$" + fmt((k.MontoBruto || 0) / 1e6, 1) + " M",
+							"monto bruto liquidado 2024-2025",
+						],
+					]
+						.map(function (a) {
+							return (
+								'<div class="kpi"><div class="k">' +
+								a[0] +
+								'</div><div class="v">' +
+								a[1] +
+								'</div><div class="s">' +
+								a[2] +
+								"</div></div>"
+							);
+						})
+						.join("");
+
+					/* ---------- barras ---------- */
+					function bars(el, rows, key, val, unit, hiFn) {
+						var max =
+							Math.max.apply(
+								null,
+								rows.map(function (r) {
+									return +r[val] || 0;
+								}),
+							) || 1;
+						$(el).innerHTML = rows
+							.map(function (r) {
+								var v = +r[val] || 0,
+									hi = hiFn && hiFn(r);
+								return (
+									'<div class="bar' +
+									(hi ? " hi" : "") +
+									'">' +
+									'<div class="bl" title="' +
+									esc(r[key]) +
+									'">' +
+									esc(r[key]) +
+									"</div>" +
+									'<div class="bt"><div class="bf" style="width:' +
+									Math.max(2, (v / max) * 100) +
+									'%"></div></div>' +
+									'<div class="bv">' +
+									(unit === "%"
+										? v.toFixed(1).replace(".", ",")
+										: fmt(v, 1)) +
+									(unit === "%" ? "%" : "") +
+									"</div></div>"
+								);
+							})
+							.join("");
+					}
+
+					// En modo vivo cada grafico se pide al backend y muestra el SQL que lo produjo,
+					// asi cualquier numero de la pagina es trazable hasta una consulta al cubo.
+					function graficoVivo(sel, spec, key, val, unit, hiFn) {
+						if (!API) return;
+						fetch("api/olap", {
+							method: "POST",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify(spec),
+						})
+							.then(function (r) {
+								return r.ok
+									? r.json()
+									: Promise.reject(new Error("api"));
+							})
+							.then(function (j) {
+								var filas = (j.filas || []).slice();
+								if (spec.ordenarPor)
+									filas.sort(function (a, b) {
+										return (
+											b[spec.ordenarPor] -
+											a[spec.ordenarPor]
+										);
+									});
+								if (spec.tope)
+									filas = filas.slice(0, spec.tope);
+								bars(sel, filas, key, val, unit, hiFn);
+								var caja = document.querySelector(sel);
+								if (
+									caja &&
+									caja.parentNode &&
+									!caja.parentNode.querySelector(".sqlbox")
+								) {
+									caja.parentNode.insertAdjacentHTML(
+										"beforeend",
+										cajaSql(j).replace(
+											'class="sqlbox"',
+											'class="sqlbox claro"',
+										),
+									);
+								}
+							})
+							.catch(function () {});
+					}
+
+					var turnos = (D.porTurno || [])
+						.slice()
+						.sort(function (a, b) {
+							return b.Tasa - a.Tasa;
+						});
+					bars(
+						"#chTurno",
+						turnos,
+						"Turno",
+						"Tasa",
+						"%",
+						function (r) {
+							return r.Turno === "Noche";
+						},
+					);
+
+					bars(
+						"#chZona",
+						(D.porZona || []).slice().sort(function (a, b) {
+							return b.Tasa - a.Tasa;
+						}),
+						"Zona",
+						"Tasa",
+						"%",
+					);
+
+					bars(
+						"#chExtra",
+						(D.porSucursal || []).slice().sort(function (a, b) {
+							return b.ExtraPorEmpleado - a.ExtraPorEmpleado;
+						}),
+						"NombreSucursal",
+						"ExtraPorEmpleado",
+						"",
+						function (r) {
+							return r.EsFranquicia === 1;
+						},
+					);
+
+					var contr = (D.porContrato || [])
+						.map(function (r) {
+							return {
+								et:
+									r.TipoContrato +
+									" · " +
+									String(r.TramoAntiguedad).replace(
+										/^\d\.\s*/,
+										"",
+									),
+								Tasa: r.Tasa,
+								tmp:
+									r.TipoContrato === "Temporario" &&
+									/6 meses/.test(r.TramoAntiguedad),
+							};
+						})
+						.sort(function (a, b) {
+							return b.Tasa - a.Tasa;
+						});
+					bars("#chContrato", contr, "et", "Tasa", "%", function (r) {
+						return r.tmp;
+					});
+
+					var sj = (D.porSucursalMes || [])
+						.filter(function (r) {
+							return (
+								r.NombreSucursal === "San Justo" &&
+								r.Anio === 2025
+							);
+						})
+						.sort(function (a, b) {
+							return a.MesNumero - b.MesNumero;
+						})
+						.map(function (r) {
+							return {
+								m: [
+									"",
+									"Enero",
+									"Febrero",
+									"Marzo",
+									"Abril",
+									"Mayo",
+									"Junio",
+									"Julio",
+									"Agosto",
+									"Septiembre",
+									"Octubre",
+									"Noviembre",
+									"Diciembre",
+								][r.MesNumero],
+								Tasa: r.Tasa,
+								hot: r.MesNumero >= 6,
+							};
+						});
+					bars("#chSanJusto", sj, "m", "Tasa", "%", function (r) {
+						return r.hot;
+					});
+
+					graficoVivo(
+						"#chTurno",
+						{ dims: ["turno"], ordenarPor: "Tasa" },
+						"Turno",
+						"Tasa",
+						"%",
+						function (r) {
+							return r.Turno === "Noche";
+						},
+					);
+
+					graficoVivo(
+						"#chZona",
+						{ dims: ["zona"], ordenarPor: "Tasa" },
+						"Zona",
+						"Tasa",
+						"%",
+					);
+
+					graficoVivo(
+						"#chExtra",
+						{ dims: ["sucursal"], ordenarPor: "ExtraPorEmpleado" },
+						"Sucursal",
+						"ExtraPorEmpleado",
+						"",
+						function (r) {
+							return (
+								[
+									"Ramos Mejia",
+									"Tigre",
+									"Quilmes",
+									"Ramos Mejía",
+								].indexOf(r.Sucursal) >= 0
+							);
+						},
+					);
+
+					graficoVivo(
+						"#chContrato",
+						{
+							dims: ["contrato", "antiguedad"],
+							ordenarPor: "Tasa",
+						},
+						"Contrato",
+						"Tasa",
+						"%",
+					);
+
+					graficoVivo(
+						"#chSanJusto",
+						{
+							dims: ["mes"],
+							where: { sucursal: "San Justo", anio: 2025 },
+							orden: "mes",
+						},
+						"Mes",
+						"Tasa",
+						"%",
+						function (r) {
+							return /-(0[6-9]|1[0-2])$/.test(String(r.Mes));
+						},
+					);
+
+					/* ---------- reglas: soporte / confianza / lift ---------- */
+					var totJ = 0,
+						totA = 0;
+					(D.porTurno || []).forEach(function (r) {
+						totJ += r.Jornadas;
+						totA += (r.Jornadas * r.Tasa) / 100;
+					});
+					var base = totJ ? (totA / totJ) * 100 : 0;
+
+					function regla(nombre, jornadas, tasa) {
+						var conf = tasa,
+							sop = totJ
+								? ((jornadas * tasa) / 100 / totJ) * 100
+								: 0,
+							lift = base ? conf / base : 0;
+						return {
+							nombre: nombre,
+							sop: sop,
+							conf: conf,
+							lift: lift,
+						};
+					}
+					var rNoche = (D.porTurno || []).filter(function (r) {
+						return r.Turno === "Noche";
+					})[0] || { Jornadas: 0, Tasa: 0 };
+					var rTemp = (D.porContrato || []).filter(function (r) {
+						return (
+							r.TipoContrato === "Temporario" &&
+							/6 meses/.test(r.TramoAntiguedad)
+						);
+					})[0] || { Jornadas: 0, Tasa: 0 };
+					var sjRows = (D.porSucursalMes || []).filter(function (r) {
+						return (
+							r.NombreSucursal === "San Justo" &&
+							r.Anio === 2025 &&
+							r.MesNumero >= 6
+						);
+					});
+					var sjJorn = sjRows.reduce(function (s, r) {
+						return s + (r.Jornadas || 0);
+					}, 0);
+					var sjAus = sjRows.reduce(function (s, r) {
+						return s + ((r.Jornadas || 0) * (r.Tasa || 0)) / 100;
+					}, 0);
+					var sjTasa = sjJorn ? (sjAus / sjJorn) * 100 : 0;
+					var rCaba = (D.porZona || []).filter(function (r) {
+						return r.Zona === "CABA";
+					})[0] || { Jornadas: 0, Tasa: 0 };
+
+					var reglas = [
+						regla(
+							"RI-1 &nbsp;SI Turno = Noche",
+							rNoche.Jornadas,
+							rNoche.Tasa,
+						),
+						regla(
+							"RI-2 &nbsp;SI Contrato = Temporario Y antigüedad &lt; 6 meses",
+							rTemp.Jornadas,
+							rTemp.Tasa,
+						),
+						regla(
+							"RI-3 &nbsp;SI Sucursal = San Justo Y mes ≥ 2025-06",
+							sjJorn,
+							sjTasa,
+						),
+						regla(
+							"CN-1 &nbsp;<em>control negativo</em> · SI Zona = CABA",
+							rCaba.Jornadas,
+							rCaba.Tasa,
+						),
+					];
+					function pintarReglas(lista) {
+						$("#tblReglas").querySelector("tbody").innerHTML = lista
+							.map(function (r) {
+								var fuerte = r.lift >= 1.3;
+								return (
+									"<tr" +
+									(fuerte ? ' class="mark"' : "") +
+									"><td>" +
+									r.nombre +
+									"</td>" +
+									'<td class="n">' +
+									pct(r.sop) +
+									'</td><td class="n">' +
+									pct(r.conf) +
+									"</td>" +
+									'<td class="n">' +
+									pct(r.base) +
+									'</td><td class="n"><strong>' +
+									r.lift.toFixed(2).replace(".", ",") +
+									"</strong></td>" +
+									"<td>" +
+									(fuerte
+										? '<span class="tag ok">Patrón real</span>'
+										: '<span class="tag no">Sin señal</span>') +
+									"</td></tr>"
+								);
+							})
+							.join("");
+					}
+
+					if (API) {
+						fetch("api/reglas")
+							.then(function (r) {
+								return r.ok
+									? r.json()
+									: Promise.reject(new Error("api"));
+							})
+							.then(function (j) {
+								pintarReglas(
+									(j.filas || []).map(function (f) {
+										return {
+											nombre: esc(f.Regla),
+											sop: +f.Soporte,
+											conf: +f.Confianza,
+											base: +f.Base,
+											lift: +f.Lift,
+										};
+									}),
+								);
+								var cont = $("#tblReglas").closest(".tw");
+								if (
+									cont &&
+									cont.parentNode &&
+									!cont.parentNode.querySelector(".sqlbox")
+								) {
+									cont.insertAdjacentHTML(
+										"afterend",
+										cajaSql(j).replace(
+											'class="sqlbox"',
+											'class="sqlbox claro"',
+										),
+									);
+								}
+							})
+							.catch(function () {
+								pintarReglas(
+									reglas.map(function (r) {
+										return {
+											nombre: r.nombre,
+											sop: r.sop,
+											conf: r.conf,
+											base: base,
+											lift: r.lift,
+										};
+									}),
+								);
+							});
+					} else {
+						pintarReglas(
+							reglas.map(function (r) {
+								return {
+									nombre: r.nombre,
+									sop: r.sop,
+									conf: r.conf,
+									base: base,
+									lift: r.lift,
+								};
+							}),
+						);
+					}
+
+					$("#tblFuera").querySelector("tbody").innerHTML = (
+						D.fueraDeMuestra || []
+					)
+						.map(function (r) {
+							var d = (r.T2025 || 0) - (r.T2024 || 0);
+							return (
+								"<tr><td>" +
+								esc(r.Turno) +
+								'</td><td class="n">' +
+								pct(r.T2024) +
+								'</td><td class="n">' +
+								pct(r.T2025) +
+								"</td>" +
+								'<td class="n">' +
+								(d >= 0 ? "+" : "") +
+								d.toFixed(2).replace(".", ",") +
+								"</td></tr>"
+							);
+						})
+						.join("");
+
+					/* ================= JUEGO ================= */
+					function tabla(cols, rows, markFn) {
+						return (
+							'<div class="tw"><table><thead><tr>' +
+							cols
+								.map(function (c, i) {
+									return (
+										"<th" +
+										(i ? ' class="n"' : "") +
+										">" +
+										esc(c) +
+										"</th>"
+									);
+								})
+								.join("") +
+							"</tr></thead><tbody>" +
+							rows
+								.map(function (r) {
+									return (
+										"<tr" +
+										(markFn && markFn(r)
+											? ' class="mark"'
+											: "") +
+										">" +
+										r.cells
+											.map(function (c, i) {
+												return (
+													"<td" +
+													(i ? ' class="n"' : "") +
+													">" +
+													c +
+													"</td>"
+												);
+											})
+											.join("") +
+										"</tr>"
+									);
+								})
+								.join("") +
+							"</tbody></table></div>"
+						);
+					}
+
+					var MOVIMIENTOS = [
+						{
+							id: "rollup",
+							op: "Roll-up",
+							label: "Total de la cadena",
+							dims: [],
+							run: function () {
+								return {
+									html: tabla(
+										[
+											"Nivel",
+											"Jornadas",
+											"Ausentismo",
+											"Horas extra",
+										],
+										[
+											{
+												cells: [
+													"Toda la cadena",
+													fmt(k.Jornadas),
+													pct(k.TasaAusentismo),
+													fmt(k.HorasExtra, 1),
+												],
+											},
+										],
+									),
+									pista:
+										"El ausentismo global es de " +
+										pct(k.TasaAusentismo) +
+										". Un promedio no dice dónde está el problema: hay que bajar de nivel.",
+								};
+							},
+						},
+						{
+							id: "turno",
+							op: "Drill-down",
+							label: "Abrir por turno",
+							dims: ["turno"],
+							run: function () {
+								var rs = turnos.map(function (r) {
+									return {
+										t: r.Turno,
+										cells: [
+											esc(r.Turno),
+											fmt(r.Jornadas),
+											pct(r.Tasa),
+											fmt(r.Extra, 1),
+										],
+									};
+								});
+								var top = turnos[0] || {},
+									bot = turnos[turnos.length - 1] || {};
+								return {
+									html: tabla(
+										[
+											"Turno",
+											"Jornadas",
+											"Ausentismo",
+											"Horas extra",
+										],
+										rs,
+										function (r) {
+											return r.t === "Noche";
+										},
+									),
+									pista:
+										"El turno " +
+										top.Turno +
+										" marca " +
+										pct(top.Tasa) +
+										" contra " +
+										pct(bot.Tasa) +
+										" del turno " +
+										bot.Turno +
+										": " +
+										(bot.Tasa
+											? (top.Tasa / bot.Tasa)
+													.toFixed(1)
+													.replace(".", ",")
+											: "—") +
+										" veces más.",
+								};
+							},
+						},
+						{
+							id: "zona",
+							op: "Drill-down",
+							label: "Abrir por zona",
+							dims: ["zona"],
+							run: function () {
+								var z = (D.porZona || [])
+									.slice()
+									.sort(function (a, b) {
+										return b.Tasa - a.Tasa;
+									});
+								return {
+									html: tabla(
+										[
+											"Zona",
+											"Jornadas",
+											"Ausentismo",
+											"Horas extra",
+										],
+										z.map(function (r) {
+											return {
+												cells: [
+													esc(r.Zona),
+													fmt(r.Jornadas),
+													pct(r.Tasa),
+													fmt(r.Extra, 1),
+												],
+											};
+										}),
+									),
+									pista:
+										"Zona " +
+										(z[0] || {}).Zona +
+										" encabeza con " +
+										pct((z[0] || {}).Tasa) +
+										", pero la diferencia entre zonas es chica: el problema no es geográfico en sí mismo.",
+								};
+							},
+						},
+						{
+							id: "sucursal",
+							op: "Drill-down",
+							label: "Abrir por sucursal",
+							dims: ["sucursal"],
+							run: function () {
+								var s = (D.porSucursal || [])
+									.slice()
+									.sort(function (a, b) {
+										return b.Tasa - a.Tasa;
+									});
+								return {
+									html: tabla(
+										[
+											"Sucursal",
+											"Empleados",
+											"Ausentismo",
+											"Extra/empleado",
+										],
+										s.map(function (r) {
+											return {
+												n: r.NombreSucursal,
+												cells: [
+													esc(r.NombreSucursal),
+													fmt(r.Empleados),
+													pct(r.Tasa),
+													fmt(r.ExtraPorEmpleado, 1),
+												],
+											};
+										}),
+										function (r) {
+											return r.n === "San Justo";
+										},
+									),
+									pista:
+										(s[0] || {}).NombreSucursal +
+										" se despega del resto con " +
+										pct((s[0] || {}).Tasa) +
+										" de ausentismo.",
+								};
+							},
+						},
+						{
+							id: "franquicia",
+							op: "Dice",
+							label: "Franquicias vs. locales propios",
+							dims: ["franquicia"],
+							run: function () {
+								var f = D.franquicias || [];
+								return {
+									html: tabla(
+										[
+											"Tipo",
+											"Empleados",
+											"Horas extra",
+											"% sobre horas",
+											"Básico promedio",
+										],
+										f.map(function (r) {
+											return {
+												t: r.Tipo,
+												cells: [
+													esc(r.Tipo),
+													fmt(r.Empleados),
+													fmt(r.Extra, 1),
+													pct(r.PctExtra),
+													"$" + fmt(r.BasicoProm),
+												],
+											};
+										}),
+										function (r) {
+											return r.t === "Franquicia";
+										},
+									),
+									pista: "Las franquicias tienen menos dotación y hasta un básico promedio algo menor — no llevan encargado de turno — pero casi triplican el peso de las horas extra sobre las horas trabajadas. Compensan dotación con extras, y eso encarece su costo por hora efectivo.",
+								};
+							},
+						},
+						{
+							id: "extras",
+							op: "Drill-down",
+							label: "Horas extra por empleado",
+							dims: ["franquicia", "sucursal"],
+							run: function () {
+								var s = (D.porSucursal || [])
+									.slice()
+									.sort(function (a, b) {
+										return (
+											b.ExtraPorEmpleado -
+											a.ExtraPorEmpleado
+										);
+									})
+									.slice(0, 8);
+								return {
+									html: tabla(
+										[
+											"Sucursal",
+											"Franquicia",
+											"Empleados",
+											"Extra/empleado",
+										],
+										s.map(function (r) {
+											return {
+												f: r.EsFranquicia,
+												cells: [
+													esc(r.NombreSucursal),
+													r.EsFranquicia
+														? "Sí"
+														: "No",
+													fmt(r.Empleados),
+													fmt(r.ExtraPorEmpleado, 1),
+												],
+											};
+										}),
+										function (r) {
+											return r.f === 1;
+										},
+									),
+									pista: "Las tres primeras posiciones en horas extra por empleado son franquicias, y son también las que menos dotación tienen.",
+								};
+							},
+						},
+						{
+							id: "mes",
+							op: "Slice",
+							label: "Evolución mensual · San Justo",
+							dims: ["mes"],
+							where: { sucursal: "San Justo", anio: 2025 },
+							orden: "mes",
+							run: function () {
+								var m = (D.porSucursalMes || [])
+									.filter(function (r) {
+										return (
+											r.NombreSucursal === "San Justo" &&
+											r.Anio === 2025
+										);
+									})
+									.sort(function (a, b) {
+										return a.MesNumero - b.MesNumero;
+									});
+								var mn = [
+									"",
+									"Enero",
+									"Febrero",
+									"Marzo",
+									"Abril",
+									"Mayo",
+									"Junio",
+									"Julio",
+									"Agosto",
+									"Septiembre",
+									"Octubre",
+									"Noviembre",
+									"Diciembre",
+								];
+								return {
+									html: tabla(
+										[
+											"Mes 2025",
+											"Ausentismo",
+											"Horas trabajadas",
+										],
+										m.map(function (r) {
+											return {
+												h: r.MesNumero >= 6,
+												cells: [
+													mn[r.MesNumero],
+													pct(r.Tasa),
+													fmt(r.Horas, 1),
+												],
+											};
+										}),
+										function (r) {
+											return r.h;
+										},
+									),
+									pista: "A partir de junio de 2025 el ausentismo de San Justo se dispara y las horas trabajadas caen mes a mes. El local cerró el 31 de agosto: la fuga de personal se anticipó al cierre.",
+								};
+							},
+						},
+						{
+							id: "contrato",
+							op: "Drill-down",
+							label: "Contrato y antigüedad",
+							dims: ["contrato", "antiguedad"],
+							run: function () {
+								var c = (D.porContrato || [])
+									.slice()
+									.sort(function (a, b) {
+										return b.Tasa - a.Tasa;
+									});
+								return {
+									html: tabla(
+										[
+											"Contrato",
+											"Antigüedad",
+											"Jornadas",
+											"Ausentismo",
+										],
+										c.map(function (r) {
+											return {
+												h:
+													r.TipoContrato ===
+														"Temporario" &&
+													/6 meses/.test(
+														r.TramoAntiguedad,
+													),
+												cells: [
+													esc(r.TipoContrato),
+													esc(
+														String(
+															r.TramoAntiguedad,
+														).replace(
+															/^\d\.\s*/,
+															"",
+														),
+													),
+													fmt(r.Jornadas),
+													pct(r.Tasa),
+												],
+											};
+										}),
+										function (r) {
+											return r.h;
+										},
+									),
+									pista: "El personal temporario con menos de seis meses concentra el ausentismo; superado el año, la tasa vuelve a la media.",
+								};
+							},
+						},
+						{
+							id: "ausencia",
+							op: "Drill-down",
+							label: "Tipo de ausencia por turno",
+							dims: ["turno", "tipoAusencia"],
+							run: function () {
+								var a = D.porTipoAusencia || [];
+								return {
+									html: tabla(
+										[
+											"Turno",
+											"Tipo de ausencia",
+											"Jornadas",
+										],
+										a.map(function (r) {
+											return {
+												h: r.Turno === "Noche",
+												cells: [
+													esc(r.Turno),
+													esc(r.TipoAusencia),
+													fmt(r.Jornadas),
+												],
+											};
+										}),
+										function (r) {
+											return r.h;
+										},
+									),
+									pista: "La composición de las ausencias es parecida en los tres turnos: lo que cambia no es el motivo declarado sino el volumen.",
+								};
+							},
+						},
+					];
+
+					var SUJETOS = [
+						{ id: "noche", t: "El turno noche" },
+						{ id: "manana", t: "El turno mañana" },
+						{ id: "franquicia", t: "Las sucursales franquiciadas" },
+						{ id: "sanjusto", t: "La sucursal San Justo" },
+						{
+							id: "temporario",
+							t: "El personal temporario reciente",
+						},
+						{ id: "caba", t: "La zona CABA" },
+					];
+					var CAUSAS = [
+						{
+							id: "ausentismo",
+							t: "Ausentismo concentrado y sostenido",
+						},
+						{
+							id: "extras",
+							t: "Horas extra excesivas por dotación insuficiente",
+						},
+						{
+							id: "fuga",
+							t: "Fuga de personal previa al cierre del local",
+						},
+						{ id: "rotacion", t: "Rotación temprana del personal" },
+						{
+							id: "nada",
+							t: "No hay anomalía real, es ruido estadístico",
+						},
+					];
+
+					var CASOS = [
+						{
+							id: 1,
+							nombre: "El turno que se apaga",
+							xp: 100,
+							movs: 8,
+							sujeto: "noche",
+							causa: "ausentismo",
+							clave: "turno",
+							brief: "La gerencia reporta que una franja horaria no llega a cubrir las cajas. Encontrá cuál y por qué.",
+							meta: ["100 XP", "8 movimientos", "guiado"],
+							regla: "RI-1 · Las jornadas de turno noche presentan más del doble de ausentismo que las de mañana, y la brecha se amplía los fines de semana.",
+						},
+						{
+							id: 2,
+							nombre: "Horas que no cierran",
+							xp: 200,
+							movs: 6,
+							sujeto: "franquicia",
+							causa: "extras",
+							clave: "franquicia",
+							brief: "El costo laboral de un grupo de locales se dispara sin que crezca la venta. El básico que pagan es el mismo que el resto.",
+							meta: ["200 XP", "6 movimientos", "libre"],
+							regla: "RI-2 · Las franquicias operan con menos dotación y compensan con horas extra, así que su costo por hora efectivo es mayor pagando el mismo básico.",
+						},
+						{
+							id: 3,
+							nombre: "Expediente San Justo",
+							xp: 300,
+							movs: 5,
+							sujeto: "sanjusto",
+							causa: "fuga",
+							clave: "mes",
+							brief: "Un local cerró en 2025. Demostrá que se podía anticipar mirando únicamente señales de personal, sin tocar las ventas.",
+							meta: ["300 XP", "5 movimientos", "sin ayuda"],
+							regla: "RI-3 · En San Justo, el ausentismo trepa y las horas caen desde junio de 2025, tres meses antes del cierre del 31 de agosto. La fuga de personal anticipa el cierre.",
+						},
+					];
+
+					var S = {
+						caso: null,
+						restantes: 0,
+						usados: [],
+						pistas: [],
+						cerrado: false,
+					};
+
+					$("#casos").innerHTML = CASOS.map(function (c) {
+						return (
+							'<button class="caso" type="button" data-c="' +
+							c.id +
+							'">' +
+							'<div class="cn">Caso 0' +
+							c.id +
+							'</div><div class="ct">' +
+							esc(c.nombre) +
+							"</div>" +
+							'<div class="cd">' +
+							esc(c.brief) +
+							"</div>" +
+							'<div class="cm">' +
+							c.meta
+								.map(function (m) {
+									return "<span>" + esc(m) + "</span>";
+								})
+								.join("") +
+							"</div></button>"
+						);
+					}).join("");
+
+					$("#selSujeto").innerHTML =
+						'<option value="">¿A quién acusás?</option>' +
+						SUJETOS.map(function (s) {
+							return (
+								'<option value="' +
+								s.id +
+								'">' +
+								esc(s.t) +
+								"</option>"
+							);
+						}).join("");
+					$("#selCausa").innerHTML =
+						'<option value="">¿Por qué motivo?</option>' +
+						CAUSAS.map(function (c) {
+							return (
+								'<option value="' +
+								c.id +
+								'">' +
+								esc(c.t) +
+								"</option>"
+							);
+						}).join("");
+
+					document.addEventListener("click", function (e) {
+						var b = e.target.closest(".caso");
+						if (b) iniciar(+b.getAttribute("data-c"));
+					});
+					$("#btnReset").addEventListener("click", function () {
+						if (S.caso) iniciar(S.caso.id);
+					});
+
+					function iniciar(id) {
+						S.caso = CASOS.filter(function (c) {
+							return c.id === id;
+						})[0];
+						S.restantes = S.caso.movs;
+						S.usados = [];
+						S.pistas = [];
+						S.cerrado = false;
+						Array.prototype.forEach.call(
+							document.querySelectorAll(".caso"),
+							function (el) {
+								el.classList.toggle(
+									"on",
+									+el.getAttribute("data-c") === id,
+								);
+							},
+						);
+						$("#shell").hidden = false;
+						$("#veredicto").innerHTML = "";
+						$("#zonaAcusacion").hidden = true;
+						$("#salida").innerHTML =
+							'<p style="color:var(--panel-ink-2);margin:0;font-size:14.5px"><strong style="color:var(--panel-ink)">' +
+							esc(S.caso.nombre) +
+							".</strong> " +
+							esc(S.caso.brief) +
+							" Elegí una operación de la izquierda.</p>";
+						pintarMovs();
+						refrescar();
+						PARTIDA = null;
+						ORDEN_MOV = 0;
+						if (API) {
+							fetch("api/partida", {
+								method: "POST",
+								headers: { "Content-Type": "application/json" },
+								body: JSON.stringify({
+									detective: "En curso",
+									idCaso: S.caso.id,
+									nombreCaso: S.caso.nombre,
+									movimientos: S.caso.movs,
+								}),
+							})
+								.then(function (r) {
+									return r.json();
+								})
+								.then(function (j) {
+									PARTIDA = j.idPartida;
+								})
+								.catch(function () {});
+						}
+						$("#shell").scrollIntoView({ block: "nearest" });
+					}
+
+					function pintarMovs() {
+						$("#movs").innerHTML = MOVIMIENTOS.map(function (m) {
+							var usado = S.usados.indexOf(m.id) >= 0;
+							return (
+								'<button class="mv' +
+								(usado ? " used" : "") +
+								'" type="button" data-m="' +
+								m.id +
+								'"' +
+								(usado || S.restantes <= 0 || S.cerrado
+									? " disabled"
+									: "") +
+								">" +
+								'<span class="op">' +
+								esc(m.op) +
+								"</span>" +
+								esc(m.label) +
+								"</button>"
+							);
+						}).join("");
+						Array.prototype.forEach.call(
+							document.querySelectorAll(".mv"),
+							function (b) {
+								b.addEventListener("click", function () {
+									jugar(b.getAttribute("data-m"));
+								});
+							},
+						);
+					}
+
+					function decimales(c) {
+						return c === "Tasa" || c === "PctHorasExtra"
+							? 2
+							: c === "Horas" || c === "Extra"
+								? 1
+								: 0;
+					}
+
+					function tablaApi(j) {
+						var cols = j.cols || [];
+						var rows = (j.filas || []).map(function (r) {
+							return {
+								cells: cols.map(function (c) {
+									var v = r[c];
+									return typeof v === "number"
+										? fmt(v, decimales(c))
+										: esc(v);
+								}),
+							};
+						});
+						return tabla(cols, rows);
+					}
+
+					function cajaSql(j) {
+						return (
+							'<details class="sqlbox"><summary>Consulta ejecutada en SQL Server \u00b7 ' +
+							(j.filas || []).length +
+							" filas \u00b7 " +
+							j.ms +
+							" ms</summary><pre>" +
+							esc(j.sql) +
+							"</pre></details>"
+						);
+					}
+
+					function mostrar(m, res, extra) {
+						$("#salida").innerHTML =
+							'<div class="gcap" style="margin-bottom:8px">' +
+							esc(m.op) +
+							" · " +
+							esc(m.label) +
+							"</div>" +
+							res.html +
+							'<div class="pista' +
+							(res.clave ? " key" : "") +
+							'">' +
+							esc(res.pista) +
+							"</div>" +
+							(extra || "");
+					}
+
+					function registrarMov(m, filas) {
+						if (!API || !PARTIDA) return;
+						fetch("api/partida/" + PARTIDA + "/movimiento", {
+							method: "POST",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify({
+								orden: ++ORDEN_MOV,
+								operacion: m.op,
+								dimensiones: (m.dims || []).join(","),
+								filtros: JSON.stringify(m.where || {}),
+								filas: filas,
+							}),
+						}).catch(function () {});
+					}
+
+					function jugar(mid) {
+						if (
+							S.restantes <= 0 ||
+							S.cerrado ||
+							S.usados.indexOf(mid) >= 0
+						)
+							return;
+						var m = MOVIMIENTOS.filter(function (x) {
+							return x.id === mid;
+						})[0];
+						var local = m.run();
+						var esClave = mid === S.caso.clave;
+						local.clave = esClave;
+						S.usados.push(mid);
+						S.restantes--;
+						S.pistas.push({
+							id: mid,
+							texto: local.pista,
+							clave: esClave,
+							label: m.op + " · " + m.label,
+						});
+						pintarMovs();
+						refrescar();
+
+						if (API && m.dims) {
+							$("#salida").innerHTML =
+								'<p style="color:var(--panel-ink-2);margin:0;font-size:14.5px">Consultando el cubo\u2026</p>';
+							fetch("api/olap", {
+								method: "POST",
+								headers: { "Content-Type": "application/json" },
+								body: JSON.stringify({
+									dims: m.dims,
+									where: m.where || {},
+									orden: m.orden || null,
+								}),
+							})
+								.then(function (r) {
+									return r.ok
+										? r.json()
+										: Promise.reject(new Error("api"));
+								})
+								.then(function (j) {
+									mostrar(
+										m,
+										{
+											html: tablaApi(j),
+											pista: local.pista,
+											clave: esClave,
+										},
+										cajaSql(j),
+									);
+									registrarMov(m, (j.filas || []).length);
+								})
+								.catch(function () {
+									mostrar(m, local, "");
+								});
+						} else {
+							mostrar(m, local, "");
+						}
+					}
+
+					function refrescar() {
+						$("#gCaso").textContent = S.caso
+							? "0" + S.caso.id
+							: "—";
+						$("#gMov").textContent = S.restantes;
+						$("#gPistas").textContent = S.pistas.length;
+						$("#gXP").textContent = S.caso
+							? Math.max(0, S.caso.xp - 25 * S.usados.length)
+							: 0;
+						if (S.pistas.length > 0 && !S.cerrado) {
+							$("#zonaAcusacion").hidden = false;
+							$("#clues").innerHTML = S.pistas
+								.map(function (p, i) {
+									return (
+										'<div class="clue"><input type="checkbox" id="p' +
+										i +
+										'" value="' +
+										p.id +
+										'">' +
+										'<label for="p' +
+										i +
+										'"><strong>' +
+										esc(p.label) +
+										"</strong> — " +
+										esc(p.texto) +
+										"</label></div>"
+									);
+								})
+								.join("");
+						}
+					}
+
+					$("#btnAcusar").addEventListener("click", function () {
+						if (S.cerrado) return;
+						var suj = $("#selSujeto").value,
+							cau = $("#selCausa").value;
+						if (!suj || !cau) {
+							alerta(
+								"Elegí un sujeto y una causa antes de acusar.",
+							);
+							return;
+						}
+						var citadas = Array.prototype.filter
+							.call(
+								document.querySelectorAll(
+									"#clues input:checked",
+								),
+								function (i) {
+									return true;
+								},
+							)
+							.map(function (i) {
+								return i.value;
+							});
+						if (citadas.length === 0) {
+							alerta(
+								"Citá al menos una pista: una acusación sin evidencia no se sostiene.",
+							);
+							return;
+						}
+
+						var ok = suj === S.caso.sujeto && cau === S.caso.causa;
+						var bonus =
+							citadas.indexOf(S.caso.clave) >= 0 ? 100 : 0;
+						var xp = ok
+							? Math.max(0, S.caso.xp - 25 * S.usados.length) +
+								bonus
+							: 0;
+						S.ultima = {
+							sujeto: suj,
+							causa: cau,
+							pistas: citadas.join(","),
+							acierto: ok,
+							xp: xp,
+						};
+						S.cerrado = true;
+						pintarMovs();
+
+						$("#veredicto").innerHTML =
+							'<div class="veredicto ' +
+							(ok ? "win" : "lose") +
+							'">' +
+							"<h4>" +
+							(ok ? "Caso resuelto" : "Acusación desestimada") +
+							"</h4>" +
+							(ok ? '<div class="xp">+' + xp + " XP</div>" : "") +
+							"<p>" +
+							(ok
+								? "La evidencia sostiene la acusación. Usaste " +
+									S.usados.length +
+									" de " +
+									S.caso.movs +
+									" movimientos" +
+									(bonus
+										? " y citaste la pista decisiva (+100 XP)"
+										: " — citar la pista decisiva daba 100 XP extra") +
+									"."
+								: "Los datos no respaldan esa combinación de sujeto y causa. Reiniciá el caso y probá otro camino de navegación.") +
+							"</p>" +
+							'<p style="margin-top:10px"><strong style="color:var(--panel-ink)">Regla inductiva del caso.</strong> ' +
+							esc(S.caso.regla) +
+							"</p>" +
+							(ok
+								? '<div class="gactions"><input type="text" id="nombreDet" placeholder="Tu nombre, detective" style="max-width:230px">' +
+									'<button class="btn primary" id="btnGuardar" type="button">Guardar en el ranking</button></div>'
+								: "") +
+							"</div>";
+
+						if (ok) {
+							$("#btnGuardar").addEventListener(
+								"click",
+								function () {
+									var n =
+										($("#nombreDet").value || "").trim() ||
+										"Anónimo";
+									guardar({
+										nombre: n,
+										caso: S.caso.nombre,
+										movs: S.usados.length,
+										xp: xp,
+									});
+									$("#btnGuardar").disabled = true;
+									$("#btnGuardar").textContent = "Guardado";
+								},
+							);
+						}
+						$("#veredicto").scrollIntoView({ block: "nearest" });
+					});
+
+					function alerta(msg) {
+						$("#veredicto").innerHTML =
+							'<div class="veredicto lose"><p style="margin:0">' +
+							esc(msg) +
+							"</p></div>";
+					}
+
+					/* ---------- ranking (localStorage) ---------- */
+					function leer() {
+						try {
+							return JSON.parse(
+								localStorage.getItem("minired_ranking") || "[]",
+							);
+						} catch (e) {
+							return [];
+						}
+					}
+					function guardar(r) {
+						if (API && PARTIDA) {
+							var cuerpo = Object.assign(
+								{ detective: r.nombre },
+								S.ultima || {},
+							);
+							fetch("api/partida/" + PARTIDA + "/acusacion", {
+								method: "POST",
+								headers: { "Content-Type": "application/json" },
+								body: JSON.stringify(cuerpo),
+							})
+								.then(function () {
+									pintarRanking();
+								})
+								.catch(function () {});
+							return;
+						}
+						var a = leer();
+						a.push(r);
+						try {
+							localStorage.setItem(
+								"minired_ranking",
+								JSON.stringify(a),
+							);
+						} catch (e) {}
+						pintarRanking();
+					}
+					function pintarRanking() {
+						if (API) {
+							fetch("api/ranking")
+								.then(function (r) {
+									return r.ok
+										? r.json()
+										: Promise.reject(new Error("api"));
+								})
+								.then(function (a) {
+									filasRanking(
+										(a || []).map(function (r) {
+											return {
+												nombre: r.Detective,
+												caso: r.NombreCaso,
+												movs: r.Movimientos,
+												xp: r.XP,
+											};
+										}),
+									);
+								})
+								.catch(function () {
+									filasRanking(leer());
+								});
+							return;
+						}
+						filasRanking(leer());
+					}
+					function filasRanking(lista) {
+						var a = (lista || [])
+							.slice()
+							.sort(function (x, y) {
+								return y.xp - x.xp;
+							})
+							.slice(0, 12);
+						var tb = $("#tblRanking").querySelector("tbody");
+						tb.innerHTML = a.length
+							? a
+									.map(function (r) {
+										return (
+											"<tr><td>" +
+											esc(r.nombre) +
+											"</td><td>" +
+											esc(r.caso) +
+											'</td><td class="n">' +
+											r.movs +
+											'</td><td class="n"><strong>' +
+											r.xp +
+											"</strong></td></tr>"
+										);
+									})
+									.join("")
+							: '<tr><td colspan="4" style="color:var(--ink-3)">Todavía no hay partidas resueltas. Resolvé un caso en Data Detective.</td></tr>';
+					}
+					pintarRanking();
+				}
+
+				function marcarModo() {
+					var el = document.getElementById("modo");
+					if (!el) return;
+					el.hidden = false;
+					el.className = "modo " + (API ? "vivo" : "local");
+					el.textContent = API
+						? "En vivo \u00b7 SQL Server"
+						: "Snapshot local";
+					el.title = API
+						? "La p\u00e1gina consulta MiniRed_DW en vivo; cada movimiento del juego ejecuta SQL en el servidor."
+						: "Sin backend: la p\u00e1gina usa el snapshot del cubo embebido en datos.js.";
+				}
+
+				function detectarTemaDeSistema() {
+					return window.matchMedia("(prefers-color-scheme: dark)")
+						.matches
+						? "dark"
+						: "light";
+				}
+
+				function actualizarFaviconPorTema(tema) {
+					const faviconUrl =
+						tema === "dark"
+							? "./assets/favicon-dark.png"
+							: "./assets/favicon-light.png";
+					setFavicon(faviconUrl);
+				}
+
+				function setFavicon(url) {
+					let link = document.getElementById("dynamic-favicon");
+					if (!link) {
+						link = document.createElement("link");
+						link.rel = "icon";
+						document.head.appendChild(link);
+					}
+					link.href = url;
+				}
+
+				actualizarFaviconPorTema(detectarTemaDeSistema());
+
+				window
+					.matchMedia("(prefers-color-scheme: dark)")
+					.addEventListener("change", e => {
+						const nuevoTema = e.matches ? "dark" : "light";
+						actualizarFaviconPorTema(nuevoTema);
+					});
+
+				fetch("api/cubo", { cache: "no-store" })
+					.then(function (r) {
+						return r.ok ? r.json() : null;
+					})
+					.then(function (j) {
+						if (j && j.kpis) {
+							D = j;
+							API = true;
+							window.DATOS_ES_MUESTRA = false;
+						}
+					})
+					.catch(function () {})
+					.then(function () {
+						arrancar();
+						marcarModo();
+					});
+			})();
+		</script>
+	</body>
 </html>
